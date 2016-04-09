@@ -1,0 +1,38 @@
+<modification>
+    <name>Testimonial by Plaza Themes</name>
+	<version>1.0</version>
+	<link>http://www.plazathemes.com/</link>
+	<author>Plaza Theme</author>
+	<code>testimonial</code>
+
+	<file path="admin/controller/common/menu.php">
+		<operation>
+			<search><![CDATA[$data['category'] = $this->url->link('catalog/category', 'token=' . $this->session->data['token'], 'SSL');]]></search>
+			<add position="after"><![CDATA[
+				$data['testimonial'] = $this->url->link('catalog/testimonial', 'token=' . $this->session->data['token'], 'SSL');
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[$data['text_category'] = $this->language->get('text_category');]]></search>
+			<add position="after"><![CDATA[
+				$data['text_testimonial'] = $this->language->get('text_testimonial');
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/english/common/menu.php">
+		<operation>
+			<search><![CDATA['Customers';]]></search>
+			<add position="after"><![CDATA[
+				$_['text_testimonial'] = 'Testimonials';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/view/template/common/menu.tpl">
+		<operation>
+			<search><![CDATA[<li><a href="<?php echo $product; ?>"><?php echo $text_product; ?></a></li>]]></search>
+			<add position="after"><![CDATA[
+				<li><a href="<?php echo $testimonial; ?>"><?php echo $text_testimonial; ?></a></li>
+			]]></add>
+		</operation>
+	</file>
+</modification>

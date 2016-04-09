@@ -1,0 +1,28 @@
+---------- Date: 2016-01-16 20:14:20 ~ IP : 109.90.212.63 ----------
+REQUEST URI : /X7/admin/index.php?route=extension/modification&token=lNvF64Um3GoIuREv6mOKb9C7A1iXqLDt
+MOD DETAILS:
+   modFile   : /var/www/vhosts/moreffect.de/httpdocs/X7/vqmod/xml/product_option_image_pro.xml
+   id        : Product Option Image PRO / Изображения опций PRO
+   version   : 2.1.2
+   vqmver    : 2.5.X
+   author    : Support: support@liveopencart.com / Поддержка: help@liveopencart.ru
+
+File Name    : admin/view/template/common/footer.tpl(0)
+VQModObject::applyMod - SEARCH NOT FOUND (SKIPPED): $('#button-image').on('click', function() {
+----------------------------------------------------------------------
+
+
+---------- Date: 2016-01-16 20:25:04 ~ IP : 109.90.212.63 ----------
+REQUEST URI : /X7/admin/index.php?route=extension/modification&token=lNvF64Um3GoIuREv6mOKb9C7A1iXqLDt
+MOD DETAILS:
+   modFile   : /var/www/vhosts/moreffect.de/httpdocs/X7/vqmod/xml/product_option_image_pro.xml
+   id        : Product Option Image PRO / Изображения опций PRO
+   version   : 2.1.2
+   vqmver    : 2.5.X
+   author    : Support: support@liveopencart.com / Поддержка: help@liveopencart.ru
+
+File Name    : admin/view/template/common/footer.tpl(0)
+VQModObject::applyMod - SEARCH NOT FOUND (SKIPPED): $('#button-image').on('click', function() {
+----------------------------------------------------------------------
+
+

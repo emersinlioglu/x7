@@ -1,0 +1,3802 @@
+<modification>
+  <id>Related Options PRO / Связанные опции PRO</id>
+	<version>1.0.4</version>
+	<vqmver>2.X</vqmver>
+	<author>Support: support@liveopencart.com / Поддержка: help@liveopencart.ru</author>
+	
+	
+	<file name="catalog/controller/product/product.php,catalog/controller/*/quickview.php">
+    
+    <operation>
+			<search position="before"><![CDATA[$data['text_select'] = $this->language->get('text_select');]]></search>
+			<add><![CDATA[
+      // Related Options PRO / Связанные опции PRO <<
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			
+			$data['ro_installed']								= $this->model_module_related_options->installed();
+			$data['ro_settings']								= $this->config->get('related_options');
+			$data['text_ro_clear_options'] 			= $this->language->get('text_ro_clear_options');
+			$data['entry_stock_control_error']  = $this->language->get('entry_stock_control_error');
+			$data['ro_theme_name']							= $this->config->get('config_template');
+			$data['ro_data'] 										= $this->model_module_related_options->get_ro_data($this->request->get['product_id'], true);
+			$data['ro_product_options']					= array();
+			
+			if ($data['ro_installed'] && $data['ro_data']) {
+				$ro_product_options = array();
+				foreach ($data['ro_data'] as $ro_dt) {
+					foreach ($ro_dt['options_ids'] as $product_option_id) {
+						if ( !in_array($product_option_id, $ro_product_options)) {
+							$ro_product_options[] = $product_option_id;
+						}
+					}
+				}
+				$data['ro_product_options'] = $ro_product_options;
+			}
+			
+			if ( isset($this->request->get['search']) && $this->request->get['search']
+			&& isset($data['ro_settings']['spec_model']) && $data['ro_settings']['spec_model'] ) {
+			//&& isset($data['ro_settings']['spec_model']) && ($data['ro_settings']['spec_model']==2 || $data['ro_settings']['spec_model']==3) ) {
+				
+				$data['ros_to_select'] = $this->model_module_related_options->getRelatedOptionsIdsFromSearch($this->request->get['product_id'], $this->request->get['search']);
+				
+			} elseif ( isset($data['ro_settings']['select_first']) && $data['ro_settings']['select_first'] == 1 ) {
+			
+				$data['ros_to_select'] = $this->model_module_related_options->getRelatedOptionsIdsAutoSelectFirst($this->request->get['product_id']);
+			
+			}
+			
+			
+			// >> Related Options PRO / Связанные опции PRO]]>
+      </add>
+		</operation>
+		
+		<!-- OC 2.0 -->
+		<operation error="skip">
+			<search position="before"><![CDATA[$this->load->language('product/product');]]></search>
+			<add><![CDATA[
+      // Related Options PRO / Связанные опции PRO << 
+			$this->load->language('module/related_options');
+			// >> Related Options PRO / Связанные опции PRO]]>
+      </add>
+		</operation>
+		
+		<!-- OC 2.1 -->
+		<operation error="skip">
+			<search position="before"><![CDATA[$this->language->load('product/product');]]></search>
+			<add><![CDATA[
+      // Related Options PRO / Связанные опции PRO << 
+			$this->language->load('module/related_options');
+			// >> Related Options PRO / Связанные опции PRO]]>
+      </add>
+		</operation>
+		
+	</file>
+	
+  <file name="admin/controller/catalog/product.php">
+    
+		<!-- OC 2.0 -->
+		<operation error="skip">
+			<search position="before"><![CDATA[$this->load->language('catalog/product');]]></search>
+			<add><![CDATA[
+      // Related Options PRO / Связанные опции PRO <<
+			$this->load->language('module/related_options');
+			// >> Related Options PRO / Связанные опции PRO]]>
+      </add>
+		</operation>
+		
+		<!-- OC 2.1 -->
+		<operation error="skip">
+			<search position="before"><![CDATA[$this->language->load('catalog/product');]]></search>
+			<add><![CDATA[
+      // Related Options PRO / Связанные опции PRO <<
+			$this->language->load('module/related_options');
+			// >> Related Options PRO / Связанные опции PRO]]>
+      </add>
+		</operation>
+    
+    <operation>
+			<search position="before"><![CDATA[$data['heading_title'] = $this->language->get('heading_title');]]></search>
+			<add><![CDATA[
+      // Related Options PRO / Связанные опции PRO <<
+			$data['related_options_title']      			= $this->language->get('related_options');
+      $data['warning_equal_options']      			= $this->language->get('warning_equal_options');
+      $data['entry_options_values']       			= $this->language->get('entry_options_values');
+      $data['entry_add_related_options']  			= $this->language->get('entry_add_related_options');
+			$data['entry_related_options_quantity']  	= $this->language->get('entry_related_options_quantity');
+			$data['entry_ro_variant']  								= $this->language->get('entry_ro_variant');
+			$data['text_ro_clear_options']  					= $this->language->get('text_ro_clear_options');
+			$data['text_ro_all_options'] 							= $this->language->get('text_ro_all_options');
+			$data['entry_ro_use'] 										= $this->language->get('entry_ro_use');
+			$data['entry_add_discount'] 							= $this->language->get('entry_add_discount');
+			$data['entry_del_discount_title'] 				= $this->language->get('entry_del_discount_title');
+			$data['entry_add_special'] 								= $this->language->get('entry_add_special');
+			$data['entry_del_special_title'] 					= $this->language->get('entry_del_special_title');
+			$data['entry_prices'] 										= $this->language->get('entry_prices');
+			$data['entry_select_first_short'] 				= $this->language->get('entry_select_first_short');
+			$data['entry_select_first_priority'] 			= $this->language->get('entry_select_first_priority');
+			$data['entry_add_all_variants']       		= $this->language->get('entry_add_all_variants');
+			$data['entry_add_product_variants']       = $this->language->get('entry_add_product_variants');
+			$data['text_ro_support']                	= $this->language->get('text_ro_support');
+			$data['entry_ro_version']               	= $this->language->get('entry_ro_version');
+			$data['text_extension_page']              = $this->language->get('text_extension_page');
+			
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			
+      $data['ro_installed'] 										= $this->model_module_related_options->installed();
+			$data['variants_options'] 								= $this->model_module_related_options->get_variants_options(TRUE);
+			$data['ro_all_options'] 									= $this->model_module_related_options->get_compatible_options_values();
+			
+			$ro_settings = $this->config->get('related_options');
+			$data['ro_settings']											= $ro_settings;
+			$data['ro_version']               				=	isset($ro_settings['related_options_version'])? $ro_settings['related_options_version'] : "";
+			
+			// >> Related Options PRO / Связанные опции PRO]]>
+      </add>
+		</operation>
+    
+		<operation>
+			<search position="after"><![CDATA[function validateForm() {]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			
+			if (isset($this->request->post['ro_data']) && is_array($this->request->post['ro_data']) ) {
+			
+				$ro_data = $this->request->post['ro_data'];
+				
+				foreach ($ro_data as $ro_dataset) {
+			
+					if (isset($ro_dataset['ro']) && isset($ro_dataset['use']) && $ro_dataset['use'] ) {
+						$ro = $ro_dataset['ro'];
+						
+						if (is_array($ro)) {
+						
+							// there's shouldn't be options not relevant to selected vatiant
+							// some extra options - not a problem, any missing - bad
+							
+							if ( !$this->model_module_related_options ) {
+								$this->load->model('module/related_options');
+							}
+							$voptions = $this->model_module_related_options->get_options_for_variant($ro_dataset['rov_id']);
+							
+							$enough_options = true;
+							foreach ($ro as $ro_comb) {
+								foreach ($voptions as $option_id) {
+									if (!isset($ro_comb['options'][$option_id])) {
+										$enough_options = false;
+									}
+								}
+							}
+							
+							if (!$enough_options) {
+								$this->error['warning'] = $this->language->get('error_not_enough_options');
+								break;
+							}
+					
+					
+							$ro_keys = array_keys($ro);
+					
+							// не должно быть совпадающих наборов опций
+							if ($enough_options) {
+								$have_equal = false;
+								for ($i=0;$i<count($ro_keys);$i++) {
+									$key_i = $ro_keys[$i];
+									
+									for ($j=0;$j<count($ro_keys);$j++) {
+										$key_j = $ro_keys[$j];
+									
+										if ($key_j!=$key_i) {
+											$all_equal = true;
+											foreach ($ro[$key_i]['options'] as $option_id => $option_value_id) {
+												if (in_array($option_id, $voptions)) {
+													$all_equal = ($all_equal && ($ro[$key_j]['options'][$option_id] == $option_value_id));
+												}
+											}
+											$have_equal = ($have_equal || $all_equal);
+										}
+									}
+								}
+								
+								if ($have_equal) {
+									$this->error['warning'] = $this->language->get('error_equal_options');
+									break;
+								}
+							}	
+							
+						}
+					}
+				}
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+	
+		<operation>
+			<search position="before"><![CDATA[if (isset($this->request->post['product_description'])) {]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			
+			
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			if (isset($this->request->post['ro_data'])) {
+				$data['ro_data'] = $this->request->post['ro_data'];
+			} elseif ( isset($product_info['product_id']) && $product_info['product_id'] ) {
+				$data['ro_data'] = $this->model_module_related_options->get_ro_data($product_info['product_id']);
+			} elseif ( isset($this->request->get['product_id']) && $this->request->get['product_id'] ) { // совместимость с другим модулем
+				$data['ro_data'] = $this->model_module_related_options->get_ro_data($this->request->get['product_id']);
+			} else {
+				$data['ro_data'] = array();
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+	</file>
+  
+  
+  <file name="admin/model/catalog/product.php">
+		<operation>
+      <search position="before"><![CDATA[$this->cache->delete('product');]]></search>
+			<add><![CDATA[
+			// Related Options PRO / Связанные опции PRO <<
+			
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			
+			$this->model_module_related_options->set_ro_data($product_id, ((isset($data))?($data):(0)) );
+      //$this->model_module_related_options->editRelatedOptions($product_id, ((isset($data))?($data):(0)) );
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		<operation>
+      <search position="before"><![CDATA[$this->addProduct($data);]]></search>
+			<add><![CDATA[
+			// Related Options PRO / Связанные опции PRO <<
+			
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			
+			$data['ro_data'] = $this->model_module_related_options->get_ro_data($product_id);
+			foreach ($data['ro_data'] as &$rodt) {
+				$rodt['rovp_id'] = 0;
+			}
+			unset($rodt);
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		<operation error="log">
+      <search position="replace"><![CDATA[$sql .= " AND p.model LIKE '" . $this->db->escape($data['filter_model']) . "%'";]]></search>
+			<add><![CDATA[
+			// Related Options PRO / Связанные опции PRO <<
+			$ro_settings = $this->config->get('related_options');
+				if (isset($ro_settings['spec_model']) && $ro_settings['spec_model']) {
+					if ($ro_settings['spec_model'] == 1) {
+						$sql .= " AND (p.model LIKE '" . $this->db->escape($data['filter_model']) . "%'
+												OR p.product_id IN ( SELECT product_id FROM ".DB_PREFIX."relatedoptions WHERE model LIKE '" . $this->db->escape($data['filter_model']) . "%' ) )";
+					} else {
+						$sql .= " AND (p.model LIKE '" . $this->db->escape($data['filter_model']) . "%'
+												OR p.product_id IN ( SELECT product_id FROM ".DB_PREFIX."relatedoptions_search WHERE model LIKE '" . $this->db->escape($data['filter_model']) . "%' ) )";
+					}
+				}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+	</file>
+  
+  
+  <file name="admin/view/template/catalog/product_form.tpl">
+    <operation>
+      <search position="before"><![CDATA[<?php echo $footer; ?>]]></search>
+      <!--<search position="before"><![CDATA[<script type="text/javascript" src="view/javascript/ckeditor/ckeditor.js"></script> ]]></search>-->
+			<add><![CDATA[
+      
+<!-- Related Options PRO / Связанные опции PRO << -->
+
+<script type="text/javascript"><!--
+
+var ro_counter = 0;
+var ro_discount_counter = 0;
+var ro_special_counter = 0;
+var ro_variants = [];
+//var ro_variants_options_order = [];
+var ro_all_options = <?php echo json_encode($ro_all_options); ?>;
+var ro_settings = <?php echo json_encode($ro_settings); ?>;
+var ro_variants = <?php echo json_encode($variants_options); ?>;
+var ro_data = <?php echo json_encode($ro_data); ?>;
+//ro_variants_options_order[0] = [];
+
+
+
+var ro_tabs_cnt = 0;
+
+function ro_tab_name_change(ro_tabs_num) {
+	
+	if ( $('#ro-use-'+ro_tabs_num+'').is(':checked') ) {
+		var new_tab_name = $('#rov-'+ro_tabs_num+' option[value="'+$('#rov-'+ro_tabs_num).val()+'"]').html();
+	} else {
+		var new_tab_name = '<?php echo addslashes($related_options_title); ?>';
+	}
+	
+	$('#ro_nav_tabs a[data-ro-cnt="'+ro_tabs_num+'"]').html(new_tab_name);
+	
+}
+
+function ro_add_tab(tab_data_param) {
+
+	var tab_data = tab_data_param ? tab_data_param : false;
+	
+	html = '<li><a href="#tab-ro-'+ro_tabs_cnt+'" data-toggle="tab" data-ro-cnt="'+ro_tabs_cnt+'">ro '+ro_tabs_cnt+'</a></li>';
+	//$('#ro_nav_tabs').append(html);
+	$('#ro_add_tab_button').closest('li').before(html);
+	
+	html = '<div class="tab-pane" id="tab-ro-'+ro_tabs_cnt+'" data-ro-cnt="'+ro_tabs_cnt+'">'+ro_tabs_cnt+'</div>';
+	$('#ro_content').append(html);
+	
+	$('#ro_nav_tabs [data-ro-cnt='+ro_tabs_cnt+']').click();
+	
+	html = '';
+	html+= '<input type="hidden" name="ro_data['+ro_tabs_cnt+'][rovp_id]" value="'+(tab_data['rovp_id'] ? tab_data['rovp_id'] : '0')+'">';
+	html+= '<div class="form-group">';
+	
+	html+= '<label class="col-sm-2 control-label"><?php echo addslashes($entry_ro_use); ?></label>';
+	
+	html+= '<div class="col-sm-10">';
+	html+= '<label class="radio-inline">';
+		html+= '<input type="radio" name="ro_data['+ro_tabs_cnt+'][use]" id="ro-use-'+ro_tabs_cnt+'" value="1" '+((tab_data['use'])?('checked'):(''))+' onchange="ro_use_check('+ro_tabs_cnt+')" />';
+		html+= ' <?php echo $text_yes; ?>';
+	html+= '</label>';
+	html+= '<label class="radio-inline">';
+		html+= '<input type="radio" name="ro_data['+ro_tabs_cnt+'][use]" value="" '+((tab_data['use'])?(''):('checked'))+' onchange="ro_use_check('+ro_tabs_cnt+')" />';
+		html+= ' <?php echo $text_no; ?>';
+	html+= '</label>';
+	html+= '</div>';
+	
+	//html+= '<input type="checkbox" id="ro-use-'+ro_tabs_cnt+'" name="ro_data['+ro_tabs_cnt+'][use]" onchange="ro_use_check('+ro_tabs_cnt+')" value="1" '+((tab_data['use'])?('checked'):(''))+'>';
+	
+	//html+= '<label class="col-sm-2 control-label"><input type="checkbox" id="ro-use-'+ro_tabs_cnt+'" name="ro_data['+ro_tabs_cnt+'][use]" onchange="ro_use_check('+ro_tabs_cnt+')" value="1" '+((tab_data['use'])?('checked'):(''))+'>&nbsp;<?php echo addslashes($entry_ro_use); ?></label><br><br>';
+	
+	html+= '</div>';
+	
+	html+= '<div id="ro-use-data-'+ro_tabs_cnt+'">';
+	html+= '	<div class="form-group">';
+	html+= '		<label class="col-sm-2 control-label" for="rov-'+ro_tabs_cnt+'" ><?php echo $entry_ro_variant; ?></label>';
+	html+= '		<div class="col-sm-3" >';
+	html+= '			<select name="ro_data['+ro_tabs_cnt+'][rov_id]" id="rov-'+ro_tabs_cnt+'" class="form-control" onChange="ro_tab_name_change('+ro_tabs_cnt+');">';
+	
+	if (ro_settings['ro_use_variants']) {
+		for (var i in ro_variants) {
+			if (i == 0) {
+				html+= '				<option value="0"><?php echo addslashes($text_ro_all_options); ?></option>';
+			} else {
+				var ro_variant = ro_variants[i];
+				html+= '			<option value="'+ro_variant['rov_id']+'" '+(tab_data['rov_id'] && tab_data['rov_id'] == ro_variant['rov_id'] ? 'selected':'')+' >'+ro_variant['name']+'</option>';
+			}
+		}	
+	} else {
+		html+= '				<option value="0"><?php echo addslashes($text_ro_all_options); ?></option>';
+	}
+	
+	html+= '			</select>';
+	html+= '		</div>';
+	html+= '		<button type="button" onclick="ro_fill_all_combinations('+ro_tabs_cnt+');" data-toggle="tooltip" title="" class="btn btn-primary" data-original-title="<?php echo addslashes($entry_add_all_variants); ?>"><?php echo addslashes($entry_add_all_variants); ?></button>';
+	html+= '		<button type="button" onclick="ro_fill_all_combinations('+ro_tabs_cnt+',1);" data-toggle="tooltip" title="" class="btn btn-primary" data-original-title="<?php echo addslashes($entry_add_product_variants); ?>"><?php echo addslashes($entry_add_product_variants); ?></button>';
+	html+= '	</div>';
+	
+	
+	
+	html+= '	<div class="table-responsive">';
+	html+= '		<table class="table table-striped table-bordered table-hover">';
+	html+= '			<thead>';
+	html+= '				<tr>';
+	html+= '					<td class="text-left"><?php echo addslashes($entry_options_values); ?></td>';
+	html+= '					<td class="text-left" width="90"><?php echo addslashes($entry_related_options_quantity); ?>:</td>';
+			
+	var ro_fields = {spec_model: "<?php echo $entry_model; ?>"
+									,spec_sku: "<?php echo $entry_sku; ?>"
+									,spec_upc: "<?php echo $entry_upc; ?>"
+									,spec_ean: "<?php echo $entry_ean; ?>"
+									,spec_location: "<?php echo $entry_location; ?>"
+									,spec_ofs: "<?php echo $entry_stock_status; ?>"
+									,spec_weight: "<?php echo $entry_weight; ?>"
+									};
+								
+	for (var i in ro_fields) {
+		if (ro_settings[i] && ro_settings[i] != 0) {
+			html+= '<td class="text-left" width="90">'+ro_fields[i]+'</td>';
+		}
+	}
+			
+	if (ro_settings['spec_price'] ) {
+		html+= '				<td class="text-left" width="90" ><?php echo addslashes($entry_price); ?></td>';
+		if (ro_settings['spec_price_discount'] ) {
+			html+= '					<td class="text-left" style="90"><?php echo addslashes($tab_discount); ?>: <font style="font-weight:normal;font-size:80%;">(<?php echo addslashes(str_replace(":","",$entry_customer_group." | ".$entry_quantity." | ".$entry_price)); ?>)</font></td>';
+		}
+		if (ro_settings['spec_price_special'] ) {
+			html+= '					<td class="text-left" style="90"><?php echo addslashes($tab_special); ?>: <font style="font-weight:normal;font-size:80%;">(<?php echo addslashes(str_replace(":","",$entry_customer_group." | ".$entry_price)); ?>)</font></td>';
+		}
+	}
+				
+	if (ro_settings['select_first'] && ro_settings['select_first'] == 1 ) {
+		html+= '				<td class="text-left" width="90" style="white-space:nowrap"><?php echo addslashes($entry_select_first_short); ?>:</td>';
+	}
+	
+					
+	html+= '					<td class="text-left" width="90"></td>';
+	
+	html+= '				<tr>';			
+	html+= '		</thead>';
+	html+= '		<tbody id="tbody-ro-'+ro_tabs_cnt+'"></tbody>';
+	html+= '	</table>';
+	
+	html+= '	<div class="col-sm-2" >';
+	html+= '		<button type="button" onclick="ro_add_combination('+ro_tabs_cnt+', false);" data-toggle="tooltip" title="" class="btn btn-primary" data-original-title="<?php echo addslashes($entry_add_related_options); ?>"><?php echo addslashes($entry_add_related_options); ?></button>';
+	html+= '	</div>';
+			
+	html+= '</div>';
+	
+	html+= '';
+	html+= '';
+	html+= '</div>';
+	
+	$('#tab-ro-'+ro_tabs_cnt+'').html(html);
+	$('#ro-use-'+ro_tabs_cnt).prop('checked', true);
+	ro_use_check(ro_tabs_cnt);
+	
+	if (tab_data['ro']) {
+		for (var i in tab_data['ro']) {
+			ro_add_combination(ro_tabs_cnt, tab_data['ro'][i]);
+		}
+	}
+	
+	// выбор добавленной закладки 
+	$('#ro_nav_tabs a[data-ro-cnt="'+ro_tabs_cnt+'"]').click();
+	
+	ro_tabs_cnt++;
+	
+	return ro_tabs_cnt-1;
+	
+}
+
+function ro_use_check(ro_tabs_num) {
+	
+	$('#ro-use-data-'+ro_tabs_num).toggle( $('input[type=radio][name="ro_data['+ro_tabs_num+'][use]"][value="1"]').is(':checked') );
+	ro_tab_name_change(ro_tabs_num);
+	
+}
+
+function ro_add_combination(ro_tabs_num, params) {
+
+	var rov_id = $('#rov-'+ro_tabs_num).val();
+	var ro_variant = ro_variants[ rov_id ];
+
+	var entry_add_discount = "<?php echo addslashes($entry_add_discount); ?>";
+	var entry_del_discount_title = "<?php echo addslashes($entry_del_discount_title); ?>";
+	
+	var entry_add_special = "<?php echo addslashes($entry_add_special); ?>";
+	var entry_del_special_title = "<?php echo addslashes($entry_del_special_title); ?>";
+	
+	
+	str_add = '';
+	str_add += "<tr id=\"related-option"+ro_counter+"\"><td>";
+	
+	var div_id = "ro_status"+ro_counter;
+	str_add +="<div id='"+div_id+"' style='color: red'></div>";
+	
+	for (var i in ro_variant['options']) {
+		
+		var ro_option = ro_variant['options'][i];
+		var option_id = ro_option['option_id'];
+	
+		str_add += "<div style='float:left;'><label class='col-sm-1 control-label' for='ro_o_"+ro_counter+"_"+option_id+"'> ";
+		str_add += "<nobr>"+ro_option['name']+":</nobr>";
+		str_add += "</label>";
+		str_add += "<select class='form-control' id='ro_o_"+ro_counter+"_"+option_id+"' name='ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][options]["+option_id+"]' onChange=\"ro_refresh_status("+ro_tabs_num+","+ro_counter+")\">";
+		str_add += "<option value=0></option>";
+					
+			for (var j in ro_all_options[option_id]['values']) {
+				if((ro_all_options[option_id]['values'][j] instanceof Function) ) { continue; }
+				
+				var option_value_id = ro_all_options[option_id]['values'][j]['option_value_id'];
+				
+				str_add += "<option value='"+option_value_id+"'";
+				if (params['options'] && params['options'][option_id] && params['options'][option_id] == option_value_id) str_add +=" selected ";
+				str_add += ">"+ro_all_options[option_id]['values'][j]['name']+"</option>";
+			}
+
+		str_add += "</select>";
+		str_add += "</div>";
+	}
+	
+  
+  str_add += "</td>";
+  str_add += "<td>&nbsp;";
+	str_add += "<input type='text' class='form-control' name='ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][quantity]' size='2' value='"+(params['quantity']||0)+"'>";
+  str_add += "<input type='hidden' name='ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][relatedoptions_id]' value='"+(params['relatedoptions_id']||"")+"'>";
+  str_add += "</td>";
+	
+	str_add += ro_add_text_field(ro_tabs_num, ro_counter, 'spec_model', params, 'model');
+	str_add += ro_add_text_field(ro_tabs_num, ro_counter, 'spec_sku', params, 'sku');
+	str_add += ro_add_text_field(ro_tabs_num, ro_counter, 'spec_upc', params, 'upc');
+	str_add += ro_add_text_field(ro_tabs_num, ro_counter, 'spec_ean', params, 'ean');
+	str_add += ro_add_text_field(ro_tabs_num, ro_counter, 'spec_location', params, 'location');
+	
+	if (ro_settings['spec_ofs']) {
+		
+		str_add += '<td>';
+		str_add += '&nbsp;<select name="ro_data['+ro_tabs_num+'][ro]['+ro_counter+'][stock_status_id]" class="form-control">';
+		str_add += '<option value="0">-</option>';
+		<?php foreach ($stock_statuses as $stock_status) { ?>
+			str_add += '<option value="<?php echo $stock_status['stock_status_id']; ?>"';
+			if ("<?php echo $stock_status['stock_status_id'] ?>" == params['stock_status_id']) {
+				str_add += ' selected ';
+			}
+			str_add += '><?php echo addslashes($stock_status['name']); ?></option>';
+		<?php } ?>
+		str_add += '</select>';
+		
+		str_add += '</td>';
+	
+	}
+	
+	if (ro_settings['spec_weight'])	{
+		str_add += "<td>&nbsp;";
+		str_add += "<select class='form-control' name='ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][weight_prefix]'>";
+		str_add += "<option value='=' "+( (params['weight_prefix'] && params['weight_prefix']=='=')? ("selected") : (""))+">=</option>";
+		str_add += "<option value='+' "+( (params['weight_prefix'] && params['weight_prefix']=='+')? ("selected") : (""))+">+</option>";
+		str_add += "<option value='-' "+( (params['weight_prefix'] && params['weight_prefix']=='-')? ("selected") : (""))+">-</option>";
+		str_add += "</select>";
+		str_add += "<input type='text' class='form-control' name='ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][weight]' value=\""+(params['weight']||'0.000')+"\" size='5'>";
+		str_add += "</td>";
+	//} else {
+	//	str_add += "<input type='hidden' name='ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][weight_prefix]' value=\""+(params['weight_prefix']||'')+"\">";
+	//	str_add += "<input type='hidden' name='ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][weight]' value=\""+(params['weight']||'0.000')+"\">";
+	}
+	
+	if (ro_settings['spec_price'])	{
+		str_add += "<td>&nbsp;";
+		if (ro_settings['spec_price_prefix']) {
+			str_add += "<select name='ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][price_prefix]' class='form-control'>";
+			var price_prefixes = ['=', '+', '-'];
+			for (var i in price_prefixes) {
+				if((price_prefixes[i] instanceof Function) ) { continue; }
+				var price_prefix = price_prefixes[i];
+				str_add += "<option value='"+price_prefix+"' "+(price_prefix==params['price_prefix']?"selected":"")+">"+price_prefix+"</option>";
+			}
+			str_add += "</select>";
+		}
+		str_add += "<input type='text' class='form-control' name='ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][price]' value='"+(params['price']||'')+"' size='10'>";
+		str_add += "</td>";
+	//} else {
+	//	str_add += "<input type='hidden' name='relatedoptions["+ro_counter+"][price]' value='"+(params['price']||'')+"'>";
+	}
+	
+	
+	if (ro_settings['spec_price'] && ro_settings['spec_price_discount'])	{
+		str_add += "<td>";
+	//} else {
+	//	str_add += "<div style='display:none;'>";
+	//}
+	
+		str_add += "<button type='button' onclick=\"ro_add_discount("+ro_tabs_num+", "+ro_counter+", '');\" data-toggle='tooltip' title='"+entry_add_discount+"' class='btn btn-primary'><i class='fa fa-plus-circle'></i></button>";
+		str_add += "<div id='ro_price_discount"+ro_counter+"' >";
+		str_add += "</div>";
+		//if (ro_settings['spec_price'] && ro_settings['spec_price_discount'])	{
+			str_add += "</td>";	
+		//} else {
+		//	str_add += "</div>";
+		//}
+	}
+	
+	if (ro_settings['spec_price'] && ro_settings['spec_price_special'])	{
+		str_add += "<td>";
+	//} else {
+	//	str_add += "<div style='display:none;'>";
+	//}
+	str_add += "<button type='button' onclick=\"ro_add_special("+ro_tabs_num+", "+ro_counter+", '');\" data-toggle='tooltip' title='"+entry_add_special+"' class='btn btn-primary'><i class='fa fa-plus-circle'></i></button>";
+	str_add += "<div id='ro_price_special"+ro_counter+"'>";
+	str_add += "</div>";
+	//if (ro_settings['spec_price'] && ro_settings['spec_price_special'])	{
+		str_add += "</td>";	
+	//} else {
+	//	str_add += "</div>";
+	}
+	
+	if (ro_settings['select_first'] && ro_settings['select_first']==1) {
+		str_add += "<td>&nbsp;";
+		
+		str_add += "<input id='defaultselect_"+ro_counter+"' type='checkbox' onchange='ro_check_defaultselectpriority("+ro_tabs_num+");' name='ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][defaultselect]' "+((params && params['defaultselect']==1)?("checked"):(""))+" value='1'>";
+		str_add += "<input id='defaultselectpriority_"+ro_counter+"' type='text' class='form-control' title='<?php echo $entry_select_first_priority; ?>' name='ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][defaultselectpriority]'  value=\""+((params && params['defaultselectpriority'])?(params['defaultselectpriority']):(""))+"\" >";
+		str_add += "</td>";	
+	}
+
+	str_add += "<td><br>";
+	str_add += "<button type=\"button\" class='btn btn-danger' onclick=\"$('#related-option" + ro_counter + "').remove();ro_refresh_status("+ro_tabs_num+");\" data-toggle=\"tooltip\" title=\"<?php echo $button_remove; ?>\" class='btn btn-primary' data-original-title=\"<?php echo $button_remove; ?>\" ><i class=\"fa fa-minus-circle\"></i></button>";
+	
+  str_add += "</td></tr>";
+  
+  $('#tbody-ro-'+ro_tabs_num).append(str_add);
+	
+	if (ro_settings['spec_price'] && ro_settings['spec_price_discount'])	{
+		if (params && params['discounts'] ) {
+			for (var i_dscnt in params['discounts']) {
+				if ( ! params['discounts'].hasOwnProperty(i_dscnt) ) continue;
+				ro_add_discount(ro_tabs_num, ro_counter, params['discounts'][i_dscnt]);
+			}
+		}
+	}
+	
+	if (ro_settings['spec_price'] && ro_settings['spec_price_special'])	{
+		if (params && params['specials'] ) {
+			for (var i_dscnt in params['specials']) {
+				if ( ! params['specials'].hasOwnProperty(i_dscnt) ) continue;
+				ro_add_special(ro_tabs_num, ro_counter, params['specials'][i_dscnt]);
+			}
+		}
+	}
+	
+	ro_update_combination(ro_tabs_num,ro_counter);
+	
+	if (params==false) {
+		ro_refresh_status(ro_tabs_num);
+		ro_check_defaultselectpriority(ro_tabs_num);
+	}
+	
+  ro_counter++;
+  
+}
+
+function ro_refresh_status(ro_tabs_num, ro_num) {
+  
+	if (ro_num || ro_num==0) {
+		ro_update_combination(ro_tabs_num, ro_num);
+	}
+	
+	var rov_id = $('#rov-'+ro_tabs_num).val();
+	var ro_variant = ro_variants[ rov_id ];
+	
+	$('#tab-ro-'+ro_tabs_num+' div[id^=ro_status]').html('');
+	
+	var opts_combs = [];
+	var checked_opts_combs = [];
+	$('#tab-ro-'+ro_tabs_num+' tr[id^=related-option]').each( function () {
+		var opts_comb = $(this).attr('ro_opts_comb');
+		
+		if ( $.inArray(opts_comb, opts_combs) != -1 && $.inArray(opts_comb, checked_opts_combs)==-1 ) {
+			$('#tab-ro-'+ro_tabs_num+' tr[ro_opts_comb='+opts_comb+']').each( function () {
+				$(this).find('div[id^=ro_status]').html('<?php echo $warning_equal_options; ?>');
+			});
+			checked_opts_combs.push(opts_comb);
+		} else {
+			opts_combs.push(opts_comb);
+		}
+	})
+	
+	return;
+	
+}
+
+function ro_update_combination(ro_tabs_num, ro_num) {
+	
+	var rov_id = $('#rov-'+ro_tabs_num).val();
+	var ro_variant = ro_variants[ rov_id ];
+	var str_opts = "";
+	
+	for (var i in ro_variant['options']) {
+		
+		if((ro_variant['options'][i] instanceof Function) ) { continue; }
+		
+		var option_id = ro_variant['options'][i]['option_id'];
+	
+		str_opts += "_о"+option_id;
+		str_opts += "_"+$('#ro_o_'+ro_num+'_'+option_id).val();
+	}
+	$('#related-option'+ro_num).attr('ro_opts_comb', str_opts);
+	
+}
+
+function ro_add_text_field(ro_tabs_num, ro_num, setting_name, params, field_name) {
+	str_add = "";
+	if (ro_settings[setting_name] && ro_settings[setting_name]!='0')	{
+		str_add += "<td>&nbsp;";
+		str_add += "<input type='text' class='form-control' name='ro_data["+ro_tabs_num+"][ro]["+ro_num+"]["+field_name+"]' value=\""+(params[field_name]||'')+"\">";
+		str_add += "</td>";
+	//} else {
+	//	str_add += "<input type='hidden' class='form-control' name='ro_data["+ro_tabs_num+"][ro]["+ro_num+"]["+field_name+"]' value=\""+(params[field_name]||'')+"\">";
+	}
+	return str_add;
+}
+
+function ro_add_discount(ro_tabs_num, ro_counter, discount) {
+	
+	var first_name = "ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][discounts]["+ro_discount_counter+"]";
+	var customer_group_id = (discount=="")?(0):(discount['customer_group_id']);
+	
+	str_add = "";
+	str_add += "<table id='related-option-discount"+ro_discount_counter+"' style='width:242px;'><tr><td>";
+	
+	str_add += "<select name='"+first_name+"[customer_group_id]' class='form-control' title=\"<?php echo htmlspecialchars($entry_customer_group); ?>\" style='float:left;width:80px;'>";
+	<?php foreach ($customer_groups as $customer_group) { ?>
+	str_add += "<option value='<?php echo $customer_group['customer_group_id']; ?>' "+((customer_group_id==<?php echo $customer_group['customer_group_id']; ?>)?("selected"):(""))+"><?php echo $customer_group['name']; ?></option>";
+	<?php } ?>
+	str_add += "</select>";
+	
+	str_add += "<input type='text' class='form-control' style='float:left;width:42px;' size='2' name='"+first_name+"[quantity]' value='"+((discount=="")?(""):(discount['quantity']))+"' title=\"<?php echo htmlspecialchars($entry_quantity); ?>\">";
+	str_add += "";
+	
+	// hidden
+	str_add += "<input type='hidden' name='"+first_name+"[priority]' value='"+((discount=="")?(""):(discount['priority']))+"' title=\"<?php echo htmlspecialchars($entry_priority); ?>\">";
+	
+	str_add += "<input type='text' class='form-control' style='float:left;width:80px;' size='10' name='"+first_name+"[price]' value='"+((discount=="")?(""):(discount['price']))+"' title=\"<?php echo htmlspecialchars($entry_price); ?>\">";
+	
+	str_add += "<button type=\"button\" onclick=\"$('#related-option-discount" + ro_discount_counter + "').remove();\" data-toggle=\"tooltip\" title=\"<?php echo $button_remove; ?>\" class=\"btn btn-danger\" style='float:left;' data-original-title=\"\"><i class=\"fa fa-minus-circle\"></i></button>";
+
+	str_add += "</td></tr></table>";
+	
+	$('#ro_price_discount'+ro_counter).append(str_add);
+	
+	ro_discount_counter++;
+	
+}
+
+function ro_add_special(ro_tabs_num, ro_counter, special) {
+	
+	var first_name = "ro_data["+ro_tabs_num+"][ro]["+ro_counter+"][specials]["+ro_special_counter+"]";
+	var customer_group_id = (special=="")?(0):(special['customer_group_id']);
+	
+	str_add = "";
+	str_add += "<table id='related-option-special"+ro_special_counter+"' style='width:200px;'><tr><td>";
+	
+	str_add += "<select name='"+first_name+"[customer_group_id]' class='form-control' style='float:left;width:80px;' title=\"<?php echo htmlspecialchars($entry_customer_group); ?>\">";
+	<?php foreach ($customer_groups as $customer_group) { ?>
+	str_add += "<option value='<?php echo $customer_group['customer_group_id']; ?>' "+((customer_group_id==<?php echo $customer_group['customer_group_id']; ?>)?("selected"):(""))+"><?php echo $customer_group['name']; ?></option>";
+	<?php } ?>
+	str_add += "</select>";
+	
+	// hidden
+	str_add += "<input type='hidden' size='2' name='"+first_name+"[priority]' value='"+((special=="")?(""):(special['priority']))+"' title=\"<?php echo htmlspecialchars($entry_priority); ?>\">";
+	str_add += "<input type='text'  class='form-control' style='float:left;width:80px;' size='10' name='"+first_name+"[price]' value='"+((special=="")?(""):(special['price']))+"' title=\"<?php echo htmlspecialchars($entry_price); ?>\">";
+	str_add += "<button type=\"button\" onclick=\"$('#related-option-special" + ro_special_counter + "').remove();\" data-toggle=\"tooltip\" title=\"<?php echo $button_remove; ?>\" class=\"btn btn-danger\" style='float:left;' data-original-title=\"<?php echo $button_remove; ?>\"><i class=\"fa fa-minus-circle\"></i></button>";
+	str_add += "</td></tr></table>";
+	
+	$('#ro_price_special'+ro_counter).append(str_add);
+	
+	ro_special_counter++;
+	
+}
+
+function ro_fill_all_combinations(ro_tabs_num, product_options_only) {
+
+	var rov_id = $('#rov-'+ro_tabs_num).val();
+	var ro_variant = ro_variants[ rov_id ];
+	//var vopts = ro_variants[ $('[name=related_options_variant]')[0].value ];
+	var all_vars = [];
+	
+	if (product_options_only) {
+		var this_product_options = [];
+		$('select[name^=product_option][name*=option_value_id]').each(function() {
+			if ( $(this).val() ) {
+				this_product_options.push($(this).val());
+			}
+		});
+	}
+		
+	var reversed_options = [];	
+	for (var i in ro_variant['options']) {
+		if((ro_variant['options'][i] instanceof Function) ) { continue; }
+		reversed_options.unshift(i);
+	}
+		
+	//for (var i in ro_variant['options']) {
+	//	if((ro_variant['options'][i] instanceof Function) ) { continue; }
+	for (var i_index in reversed_options) {
+	
+		var i = reversed_options[i_index];
+		
+		var option_id = ro_variant['options'][i]['option_id'];
+		
+		var temp_arr = [];
+		for (var j in ro_all_options[option_id]['values']) {
+			if((ro_all_options[option_id]['values'][j] instanceof Function) ) { continue; }
+			
+			var option_value_id = ro_all_options[option_id]['values'][j]['option_value_id']
+			
+			if (product_options_only && $.inArray(option_value_id, this_product_options) == -1 ) { //
+				continue;
+			}
+			if (all_vars.length) {
+				for (var k in all_vars) {
+					if((all_vars[k] instanceof Function) ) { continue; }
+					
+					var comb_arr = all_vars[k].slice(0);
+					comb_arr[option_id] = option_value_id;
+					temp_arr.push( comb_arr );
+				}
+			} else {
+				var comb_arr = [];
+				comb_arr[option_id] = option_value_id;
+				temp_arr.push(comb_arr);
+			}
+			
+		}
+		if (temp_arr && temp_arr.length) {
+			all_vars = temp_arr.slice(0);
+		}
+	}
+	
+	if (all_vars.length) {
+		for (var i in all_vars) {
+			if((all_vars[i] instanceof Function) ) { continue; }
+			
+			rop = {};
+			for (var j in all_vars[i]) {
+				if((all_vars[i][j] instanceof Function) ) { continue; }
+				rop[j] = all_vars[i][j];
+			}
+			
+			ro_add_combination(ro_tabs_num, {options: rop});
+
+		}
+		
+		ro_use_check(ro_tabs_num);
+		ro_refresh_status(ro_tabs_num);
+		ro_check_defaultselectpriority(ro_tabs_num);
+		
+	}
+	
+}
+
+// check priority fields (is it available or not) for default options combination
+function ro_check_defaultselectpriority(ro_tabs_num) {
+	
+	var dsc = $('#tab-ro-'+ro_tabs_num+' input[type=checkbox][id^=defaultselect_]');
+	var dsp;
+	for (var i=0;i<dsc.length;i++) {
+		dsp = $('#defaultselectpriority_'+dsc[i].id.substr(14));
+		if (dsp && dsp.length) {
+			if (dsc[i].checked) {
+				dsp[0].style.display = '';
+				if (isNaN(parseInt(dsp[0].value))) {
+					dsp[0].value = 0;
+				}
+				if (parseInt(dsp[0].value)==0) {
+					dsp[0].value = "1";
+				}
+			} else {
+				dsp[0].style.display = 'none';
+			}
+		}
+	}
+}
+
+
+if (ro_data) {
+	for (var i in ro_data) {
+		var ro_tabs_num = ro_add_tab(ro_data[i]);
+		
+		ro_use_check(ro_tabs_num);
+		ro_refresh_status(ro_tabs_num);
+		ro_check_defaultselectpriority(ro_tabs_num);
+		
+	}
+	
+	
+	
+}
+
+
+
+//--></script>
+<!-- >> Related Options PRO / Связанные опции PRO -->
+      
+      ]]>
+      </add>
+		</operation>
+    
+    <operation>
+      <search position="after"><![CDATA[<?php echo $tab_design; ?></a>]]></search>
+			<add><![CDATA[
+        <!-- Related Options PRO / Связанные опции PRO << -->
+				<?php if ($ro_installed) { ?>
+				<li><a href="#tab-related_options" data-toggle="tab"><?php echo $related_options_title; ?></a></li>
+				<?php } ?>
+        <!-- >> Related Options PRO / Связанные опции PRO -->
+      
+      ]]></add>
+		</operation>
+    
+     <operation>
+      <search position="before"><![CDATA[id="tab-discount"]]></search>
+			<add><![CDATA[
+        <!-- Related Options PRO / Связанные опции PRO << -->
+				<?php if ($ro_installed) { ?>
+					<div class="tab-pane" id="tab-related_options">
+						
+						
+						<ul class="nav nav-tabs" id="ro_nav_tabs">
+							<li>
+								<button type="button" id='ro_add_tab_button' onclick="ro_add_tab();" data-toggle="tooltip" class="btn"><i class="fa fa-plus-circle"></i></button>
+							</li>
+						</ul>
+			
+						<div class="tab-content" id="ro_content">
+						
+							<input type="hidden" name="ro_data_included" value="1">
+							
+						</div>
+						
+						<span class="help-block" style="margin-top: 30px;">
+							<?php echo $entry_ro_version.": ".$ro_version; ?> | <?php echo $text_ro_support; ?> | <?php echo $text_extension_page; ?>
+						</span>
+				
+					</div>
+			
+				<?php } ?>
+
+        <!-- >> Related Options PRO / Связанные опции PRO -->
+      
+      ]]></add>
+		</operation>
+    
+	</file>
+  
+	<file name="admin/controller/sale/order.php">
+		
+		<!-- OC 2.0 -->
+		<operation error="skip">
+      <search position="before"><![CDATA[$this->load->language('sale/order');]]></search>
+			<add><![CDATA[
+			// Related Options PRO / Связанные опции PRO <<
+			$this->load->language('catalog/product');
+			// >> Related Options PRO / Связанные опции PRO
+			]]></add>
+		</operation>
+		
+		<!-- OC 2.1 -->
+		<operation error="skip">
+      <search position="before"><![CDATA[$this->language->load('sale/order');]]></search>
+			<add><![CDATA[
+			// Related Options PRO / Связанные опции PRO <<
+			$this->language->load('catalog/product');
+			// >> Related Options PRO / Связанные опции PRO
+			]]></add>
+		</operation>
+		
+		<operation error="log">
+      <search position="after"><![CDATA[$data['column_model'] = $this->language->get('column_model');]]></search>
+			<add><![CDATA[
+			// Related Options PRO / Связанные опции PRO <<
+			
+			$data['column_sku'] = $this->language->get('entry_sku');
+			$data['column_upc'] = $this->language->get('entry_upc');
+			$data['column_ean'] = $this->language->get('entry_ean');
+			$data['column_location'] = $this->language->get('entry_location');
+
+			$ro_settings = $this->config->get('related_options');
+			
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			
+			$data['ro_installed'] = $this->model_module_related_options->installed();
+			
+			if ($data['ro_installed'] && $ro_settings)  {
+			
+				$data['ro_fields'] = array();
+				$ro_fields = array('sku', 'upc', 'ean', 'location');
+				foreach ($ro_fields as $ro_field) {
+					if (isset($ro_settings['spec_'.$ro_field]) && $ro_settings['spec_'.$ro_field]) {
+						$data['ro_fields'][] = $ro_field;
+					}
+				}
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO
+			]]></add>
+		</operation>
+		
+		<operation>
+      <search position="after"><![CDATA['model'    => $product['model'],]]></search>
+			<add><![CDATA[
+			// Related Options PRO / Связанные опции PRO <<
+			'sku'    		  => isset($product['sku']) ? $product['sku'] : '',
+			'upc'    		  => isset($product['upc']) ? $product['upc'] : '',
+			'ean'    		  => isset($product['ean']) ? $product['ean'] : '',
+			'location'    => isset($product['location']) ? $product['location'] : '',
+			// >> Related Options PRO / Связанные опции PRO
+			]]></add>
+		</operation>
+		
+		<operation>
+      <search position="after"><![CDATA['model'      => $product['model'],]]></search>
+			<add><![CDATA[
+			// Related Options PRO / Связанные опции PRO <<
+			'sku'    		  => isset($product['sku']) ? $product['sku'] : '',
+			'upc'    		  => isset($product['upc']) ? $product['upc'] : '',
+			'ean'    		  => isset($product['ean']) ? $product['ean'] : '',
+			'location'    => isset($product['location']) ? $product['location'] : '',
+			// >> Related Options PRO / Связанные опции PRO
+			]]></add>
+		</operation>
+		
+		<operation>
+      <search position="after"><![CDATA['model'    		   => $product['model'],]]></search>
+			<add><![CDATA[
+			// Related Options PRO / Связанные опции PRO <<
+			'sku'    		  => isset($product['sku']) ? $product['sku'] : '',
+			'upc'    		  => isset($product['upc']) ? $product['upc'] : '',
+			'ean'    		  => isset($product['ean']) ? $product['ean'] : '',
+			'location'    => isset($product['location']) ? $product['location'] : '',
+			// >> Related Options PRO / Связанные опции PRO
+			]]></add>
+		</operation>
+		
+		
+		
+	</file>
+	
+	<file name="admin/view/template/sale/order_info.tpl">
+		
+		<operation>
+      <search position="after"><![CDATA[<td class="text-left"><?php echo $column_model; ?></td>]]></search>
+			<add><![CDATA[
+			<?php
+			// Related Options PRO / Связанные опции PRO <<
+				if (isset($ro_installed) && $ro_installed && isset($ro_fields)) {
+				
+					//$ro_fields = array('sku', 'upc', 'location');
+				
+					// array contains only fields enabled on the module settings page
+					foreach ($ro_fields as $ro_field) {
+						?>
+							<td class="text-left"><?php echo ${'column_'.$ro_field}; ?></td>
+						<?php
+					}
+				}
+			// >> Related Options PRO / Связанные опции PRO
+			?>
+			]]></add>
+		</operation>
+		
+		<operation>
+      <search position="after"><![CDATA[<td class="text-left"><?php echo $product['model']; ?></td>]]></search>
+			<add><![CDATA[
+			<?php
+			// Related Options PRO / Связанные опции PRO <<
+				if (isset($ro_installed) && $ro_installed && isset($ro_fields)) {
+				
+					//$ro_fields = array('sku', 'upc', 'location');
+				
+					// array contains only fields enabled on the module settings page
+					foreach ($ro_fields as $ro_field) {
+						?>
+							<td class="text-left"><?php echo $product[$ro_field]; ?></td>
+						<?php
+					}
+				}
+			// >> Related Options PRO / Связанные опции PRO
+			?>
+			
+			]]></add>
+		</operation>
+		
+		<operation error="skip">
+      <search position="replace"><![CDATA[<td colspan="4" class="text-right"><?php echo $totals['title']; ?>:</td>]]></search>
+			<add><![CDATA[
+			<!-- Related Options PRO / Связанные опции PRO << -->
+			<td colspan="<?php echo (4+(isset($ro_fields)? count($ro_fields) : 0 ) ); ?>" class="text-right"><?php echo $totals['title']; ?>:</td>
+			<!-- >> Related Options PRO / Связанные опции PRO -->
+			]]></add>
+		</operation>
+		
+		<operation error="skip">
+      <search position="replace"><![CDATA[<td colspan="4" class="text-right"><?php echo $total['title']; ?>:</td>]]></search>
+			<add><![CDATA[
+			<!-- Related Options PRO / Связанные опции PRO << -->
+			<td colspan="<?php echo (4+(isset($ro_fields)? count($ro_fields) : 0 ) ); ?>" class="text-right"><?php echo $total['title']; ?>:</td>
+			<!-- >> Related Options PRO / Связанные опции PRO -->
+			]]></add>
+		</operation>
+		
+		
+		<operation error="skip">
+      <search position="replace"><![CDATA[<?php if ( isset($improvedoptions_settings) && isset($improvedoptions_settings['sku_for_options']) && $improvedoptions_settings['sku_for_options'] ) { ?>]]></search>
+			<add><![CDATA[
+			<!-- Related Options PRO / Связанные опции PRO << -->
+			<?php
+			if ( isset($improvedoptions_settings) && isset($improvedoptions_settings['sku_for_options']) && $improvedoptions_settings['sku_for_options']
+					&& ( !isset($ro_fields) || !in_array('sku', $ro_fields) ) ) {
+			?>
+			<!-- >> Related Options PRO / Связанные опции PRO -->
+			]]></add>
+		</operation>
+		
+	</file>
+	
+	<file name="admin/view/template/sale/order_invoice.tpl">
+		
+		<operation>
+      <search position="after"><![CDATA[<td><b><?php echo $column_model; ?></b></td>]]></search>
+			<add><![CDATA[
+			<?php
+			// Related Options PRO / Связанные опции PRO <<
+				if (isset($ro_installed) && $ro_installed && isset($ro_fields)) {
+				
+					//$ro_fields = array('sku', 'upc', 'location');
+				
+					// array contains only fields enabled on the module settings page
+					foreach ($ro_fields as $ro_field) {
+						?>
+							<td><b><?php echo ${'column_'.$ro_field}; ?></b></td>
+						<?php
+					}
+				}
+			// >> Related Options PRO / Связанные опции PRO
+			?>
+			]]></add>
+		</operation>
+		
+		<operation>
+      <search position="after"><![CDATA[<td><?php echo $product['model']; ?></td>]]></search>
+			<add><![CDATA[
+			<?php
+			// Related Options PRO / Связанные опции PRO <<
+				if (isset($ro_installed) && $ro_installed && isset($ro_fields)) {
+				
+					//$ro_fields = array('sku', 'upc', 'location');
+				
+					// в массиве только включенные в настройках модуля поля
+					foreach ($ro_fields as $ro_field) {
+						?>
+							<td><?php echo $product[$ro_field]; ?></td>
+						<?php
+					}
+				}
+			// >> Related Options PRO / Связанные опции PRO
+			?>
+			
+			]]></add>
+		</operation>
+		
+		<operation error="skip">
+      <search position="replace"><![CDATA[<td class="text-right" colspan="4"><b><?php echo $totals['title']; ?></b></td>]]></search>
+			<add><![CDATA[
+			<!-- Related Options PRO / Связанные опции PRO << -->
+			<td  class="text-right"  colspan="<?php echo (4+(isset($ro_fields)? count($ro_fields) : 0 ) ); ?>" ><?php echo $totals['title']; ?>:</td>
+			<!-- >> Related Options PRO / Связанные опции PRO -->
+			]]></add>
+		</operation>
+		
+		<operation error="skip">
+      <search position="replace"><![CDATA[<td class="text-right" colspan="4"><b><?php echo $total['title']; ?></b></td>]]></search>
+			<add><![CDATA[
+			<!-- Related Options PRO / Связанные опции PRO << -->
+			<td  class="text-right"  colspan="<?php echo (4+(isset($ro_fields)? count($ro_fields) : 0 ) ); ?>" ><?php echo $total['title']; ?>:</td>
+			<!-- >> Related Options PRO / Связанные опции PRO -->
+			]]></add>
+		</operation>
+		
+	</file>
+	
+	<file name="admin/view/template/sale/order_form.tpl">
+		
+		<operation>
+      <search position="after"><![CDATA[<td class="text-left"><?php echo $column_model; ?></td>]]></search>
+			<add><![CDATA[
+			<?php
+			// Related Options PRO / Связанные опции PRO <<
+				if (isset($ro_installed) && $ro_installed && isset($ro_fields)) {
+				
+					//$ro_fields = array('sku', 'upc', 'location');
+				
+					// array contains only fields enabled on the module settings page
+					foreach ($ro_fields as $ro_field) {
+						?>
+							<td class="text-left"><?php echo ${'column_'.$ro_field}; ?></td>
+						<?php
+					}
+				}
+			// >> Related Options PRO / Связанные опции PRO
+			?>
+			]]></add>
+		</operation>
+		
+		<!--
+		<operation>
+      <search position="before"><![CDATA[<td class="text-right"><?php echo $order_product['quantity']; ?>]]></search>
+			<add><![CDATA[
+			<?php
+			// Related Options PRO / Связанные опции PRO <<
+				if (isset($ro_installed) && $ro_installed && isset($ro_fields)) {
+				
+					//$ro_fields = array('sku', 'upc', 'location');
+				
+					// в массиве только включенные в настройках модуля поля
+					foreach ($ro_fields as $ro_field) {
+						?>
+							<td class="text-left"><?php echo $order_product[$ro_field]; ?>
+						<?php
+					}
+				}
+			// >> Related Options PRO / Связанные опции PRO
+			?>
+			
+			]]></add>
+		</operation>
+		-->
+		
+		<operation>
+      <search position="iafter"><![CDATA[<td class="text-left"><?php echo $order_product['model']; ?></td>]]></search>
+			<add><![CDATA[
+			<?php
+			// Related Options PRO / Связанные опции PRO <<
+				if (isset($ro_installed) && $ro_installed && isset($ro_fields)) {
+				
+					// array contains only fields enabled on the module settings page
+					foreach ($ro_fields as $ro_field) {
+						?>
+							<td class="text-left"><?php echo $order_product[$ro_field]; ?></td>
+						<?php
+					}
+				}
+			// >> Related Options PRO / Связанные опции PRO
+			?>
+			
+			]]></add>
+		</operation>
+		
+		
+		<operation>
+      <search position="after"><![CDATA[html += '  <td class="text-left">' + product['model'] + '</td>';]]></search>
+			<add><![CDATA[
+			// << Related Options PRO / Связанные опции PRO
+			<?php
+			if (isset($ro_installed) && $ro_installed && isset($ro_fields)) {
+				foreach ($ro_fields as $ro_field) { ?>
+					//1
+					html += '  <td class="text-left">' + ((product["<?php echo $ro_field; ?>"]) ? product["<?php echo $ro_field; ?>"] : '') + '</td>';
+				<?php }
+			}	?>
+			// >> Related Options PRO / Связанные опции PRO
+			]]></add>
+		</operation>
+		
+		<operation>
+      <search position="replace"><![CDATA[html += '  <td class="text-right" colspan="4">' + total['title'] + ':</td>';]]></search>
+			<add><![CDATA[
+			// << Related Options PRO / Связанные опции PRO
+			// replaced : html += '  <td class="text-right" colspan="4">' + total['title'] + ':</td>';
+				html += '  <td class="text-right" colspan="<?php echo (4+ (isset($ro_fields)? count($ro_fields): 0) ); ?>">' + total['title'] + ':</td>';
+			// >> Related Options PRO / Связанные опции PRO
+			]]></add>
+		</operation>
+		
+	</file>
+	
+	<file name="catalog/model/checkout/order.php">
+		
+		<operation>
+      <search position="after"><![CDATA[$order_option_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "order_option WHERE order_id = '" . (int)$order_id . "' AND order_product_id = '" . (int)$order_product['order_product_id'] . "'");]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			
+				if ( !$this->model_module_related_options ) {
+					$this->load->model('module/related_options');
+				}
+				
+				$this->model_module_related_options->update_ro_quantity((int)$order_product['product_id'], (int)$order_id, (int)$order_product['order_product_id'], (int)$order_product['quantity'], '-');
+				//$this->model_module_related_options->update_related_options_quantity_by_order((int)$order_product['product_id'], (int)$order_product['quantity'], $order_option_query->rows);
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		<operation>
+      <search position="after"><![CDATA[$order_product_id = $this->db->getLastId();]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+				
+				if ( !$this->model_module_related_options ) {
+					$this->load->model('module/related_options');
+				}
+				
+				$this->model_module_related_options->updateOrderProductAdditionalFields($product, $order_product_id);
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		<operation error="log">
+      <search position="before"><![CDATA[$this->db->query("UPDATE `" . DB_PREFIX . "product` SET quantity = (quantity +]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			
+			$this->model_module_related_options->update_ro_quantity((int)$product['product_id'], (int)$order_id, (int)$product['order_product_id'], (int)$product['quantity'], '+');
+			//$this->model_module_related_options->set_ro_quantity_back((int)$product['product_id'], $this->model_module_related_options->getOrderOptions((int)$order_id, (int)$product['order_product_id']), (int)$product['quantity']);
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		<!-- не нужно (было нужно в админке) 
+		<operation error="log">
+      <search position="after"><![CDATA[$order_product_id = $this->db->getLastId();]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+	
+			$this->load->model('module/related_options');
+			if ($this->model_module_related_options->installed()) {
+				$ro_settings = $this->config->get('related_options');
+				
+				$ro_fields = array('sku', 'upc', 'location');
+				
+				foreach ($ro_fields as $ro_field) {
+					if (isset($ro_settings['spec_'.$ro_field]) && $ro_settings['spec_'.$ro_field] && isset($order_product[$ro_field])) {
+						$this->db->query("UPDATE `" . DB_PREFIX . "order_product` SET `".$ro_field."`='".$this->db->escape((string)$order_product[$ro_field])."' WHERE order_product_id = '" . (int)$order_product_id . "'");
+					}
+				}
+				
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+	
+		-->
+	</file>
+	
+	
+	<file name="admin/model/sale/order.php">
+			
+		<!-- moved to /catalog/ dir 
+		<operation error="log"> 
+      <search position="before"><![CDATA[$this->db->query("UPDATE `" . DB_PREFIX . "product` SET quantity = (quantity +]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+
+			$this->load->model('module/related_options');
+			$this->model_module_related_options->set_ro_quantity_back((int)$product['product_id'], $this->model_module_related_options->getOrderOptions((int)$order_id, (int)$product['order_product_id']), (int)$product['quantity']);
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+	-->
+		
+		<!-- non standard 
+		<operation error="skip">
+      <search position="before"><![CDATA[$this->db->query("UPDATE " . DB_PREFIX . "product SET quantity = (quantity - " . (int)$order_product['quantity']]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+
+			if (isset($order_product['order_option'])) {
+				$this->load->model('module/related_options');
+				$this->model_module_related_options->set_ro_quantity_back((int)$order_product['product_id'], $order_product['order_option'], -(int)$order_product['quantity'] );
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		-->
+		
+		<!--
+		<operation error="log">
+      <search position="after"><![CDATA[$order_product_id = $this->db->getLastId();]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+	
+			$this->load->model('module/related_options');
+			if ($this->model_module_related_options->installed()) {
+				$ro_settings = $this->config->get('related_options');
+				
+				$ro_fields = array('sku', 'upc', 'location');
+				
+				foreach ($ro_fields as $ro_field) {
+					if (isset($ro_settings['spec_'.$ro_field]) && $ro_settings['spec_'.$ro_field] && isset($order_product[$ro_field])) {
+						$this->db->query("UPDATE `" . DB_PREFIX . "order_product` SET `".$ro_field."`='".$this->db->escape((string)$order_product[$ro_field])."' WHERE order_product_id = '" . (int)$order_product_id . "'");
+					}
+				}
+				
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+	
+	-->
+		
+	</file>
+	
+	<file name="catalog/model/module/liveprice.php" error="skip">
+		
+		<operation error="log">
+      <search position="after"><![CDATA[if ($product_query->num_rows) {]]></search>
+			<add><![CDATA[
+			// << Related Options PRO / Связанные опции PRO 
+
+			
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			$ro_settings = $this->config->get('related_options');
+			$ro_installed = $this->model_module_related_options->installed();
+			
+			if ($ro_installed) {
+			
+				$ro_combs = $this->model_module_related_options->get_related_options_sets_by_poids($product_id, $options, true);
+				//$ro_combs = $this->model_module_related_options->get_related_options_sets_by_poids($product_id, $options);
+				
+				if ($ro_combs) {
+					foreach ($ro_combs as $ro_comb) {
+						if (isset($ro_settings['spec_weight']) && $ro_settings['spec_weight'] && $ro_comb['weight'] != 0) {
+							if ($ro_comb['weight_prefix'] == '=') {
+								$product_query->row['weight'] = $ro_comb['weight'];
+							} elseif ($ro_comb['weight_prefix'] == '+') {
+								$product_query->row['weight'] += $ro_comb['weight'];
+							} elseif ($ro_comb['weight_prefix'] == '-') {
+								$product_query->row['weight'] -= $ro_comb['weight'];
+							}
+						}
+					}
+				}
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		<operation error="log">
+			<search position="before"><![CDATA[$price_rewrited = $this->calculateOptionPrice($option_price, (int)$product_id, $product_query->row['price']]]></search>
+      <!-- <search position="after"><![CDATA[$price = $product_query->row['price'];]]></search> -->
+			<add><![CDATA[
+			// << Related Options PRO / Связанные опции PRO
+			
+			if ( $ro_installed && isset($ro_settings['spec_price']) && $ro_settings['spec_price'] ) {
+			
+				if ($ro_combs) {
+					
+					$ro_price_modificator = 0;
+					$ro_specical_temp = 0;
+          $ro_stock_temp = 0;
+					$product_query->row['price'] = $this->model_module_related_options->calc_price_with_ro($product_query->row['price'], $ro_combs, $ro_specical_temp, $ro_stock_temp, $ro_price_modificator);
+					//$price = $this->model_module_related_options->calc_price_with_ro($price, $ro_combs);
+					
+				}
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		<operation error="log">
+      <search position="after"><![CDATA[$price_rewrited = $this->calculateOptionPrice($option_price, (int)$product_id, $product_query->row['price']]]></search>
+			<add><![CDATA[
+			// << Related Options PRO / Связанные опции PRO <<
+			
+			if ($price_rewrited && isset($ro_price_modificator) && $ro_price_modificator!=0 ) {
+				$product_query->row['price'] = $product_query->row['price'] + $ro_price_modificator;
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO
+			]]></add>
+		</operation>
+		
+		<operation error="log">
+      <search position="before"><![CDATA[if ($product_discount_query->num_rows) {]]></search>
+			<add><![CDATA[
+			// << Related Options PRO / Связанные опции PRO <<
+			if ( $ro_installed && isset($ro_settings['spec_price']) && $ro_settings['spec_price'] && isset($ro_settings['spec_price_discount']) && $ro_settings['spec_price_discount'] ) {
+				if ($ro_combs) {
+					foreach ($ro_combs as $ro_comb) {
+						$ro_discount_query = $this->db->query("SELECT price FROM " . DB_PREFIX . "relatedoptions_discount
+																											WHERE relatedoptions_id = '" . (int)$ro_comb['relatedoptions_id'] . "'
+																												AND customer_group_id = '" . (int)$customer_group_id . "'
+																												AND quantity <= '" . (int)$discount_quantity . "'
+																											ORDER BY quantity DESC, priority ASC, price ASC LIMIT 1");
+						if ($ro_discount_query->num_rows)	{
+							$product_discount_query = $ro_discount_query;
+						}
+					}
+				}
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		<operation error="log">
+      <search position="before"><![CDATA[if ($product_special_query->num_rows) {]]></search>
+			<add><![CDATA[
+			// << Related Options PRO / Связанные опции PRO <<
+			
+			if ( $ro_installed && isset($ro_settings['spec_price']) && $ro_settings['spec_price'] && isset($ro_settings['spec_price_special']) && $ro_settings['spec_price_special'] ) {
+				if ($ro_combs) {
+					foreach ($ro_combs as $ro_comb) {
+						$ro_special_query = $this->db->query(" SELECT price FROM " . DB_PREFIX . "relatedoptions_special
+																												WHERE relatedoptions_id = '" . (int)$ro_comb['relatedoptions_id'] . "'
+																													AND customer_group_id = '" . (int)$customer_group_id . "'
+																												ORDER BY priority ASC, price ASC LIMIT 1");
+						if ($ro_special_query->num_rows)	{
+							$product_special_query = $ro_special_query;
+						}
+					}
+				}	
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		<operation error="log">
+      <search position="after"><![CDATA[$discounts = $this->model_catalog_product->getProductDiscounts($product_id);]]></search>
+			<add><![CDATA[
+			// << Related Options PRO / Связанные опции PRO <<
+			
+			if ( $ro_installed && isset($ro_settings['spec_price']) && $ro_settings['spec_price'] && isset($ro_settings['spec_price_discount']) && $ro_settings['spec_price_discount'] ) {
+				if ($ro_combs) {
+					foreach ($ro_combs as $ro_comb) {
+						$ro_discount_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "relatedoptions_discount
+																											WHERE relatedoptions_id = '" . (int)$ro_comb['relatedoptions_id'] . "'
+																												AND customer_group_id = '" . (int)$customer_group_id . "'
+																											ORDER BY quantity ASC, priority ASC, price ASC");
+						if ($ro_discount_query->num_rows)	{
+							$discounts = $ro_discount_query->rows;
+						}
+					}
+				}	
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+	</file>
+	
+	<file name="system/library/cart.php" error="log">
+		
+		<operation>
+			<search position="after" ><![CDATA[class Cart {]]></search>
+			<add><![CDATA[
+			// << Related Options PRO / Связанные опции PRO
+			
+			private $relatedoptions_model = false;
+			
+			// >> Related Options PRO / Связанные опции PRO
+			]]></add>
+		</operation>
+		
+		<operation>
+      <search position="before"><![CDATA[public function getProducts() {]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			
+			private function ro_calc_price($product_price, $ro_combs) {
+			
+				$ro_model = $this->ro_get_model();
+			
+				return $ro_model->calc_price_with_ro($product_price, $ro_combs);
+			}
+			
+			private function ro_get_model() {
+				global $loader, $registry;
+				
+				if ($this->relatedoptions_model===false) {
+					if (!$loader || !is_object($loader) || !method_exists($loader, 'model')) {
+						$loader = new Loader($registry);
+					}
+					
+					$loader->model('module/related_options');
+					$this->relatedoptions_model = $registry->get('model_module_related_options');
+				}
+				
+				return $this->relatedoptions_model;
+			}
+			
+			private function ro_get_products_data(&$ro_quantities) {
+				
+				$ro_model = $this->ro_get_model();
+				
+				$ro_for_products = array();
+				$ro_quantities = array(); // total quantities by related options
+				
+				if (	$ro_model->installed() ) {
+					if (!$this->data) {
+					
+						if ( VERSION >= '2.1.0.0' ) {
+							$cart_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "cart WHERE customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "'");
+	
+							foreach ($cart_query->rows as $cart) {
+								$key = $cart['cart_id'];
+								$product_id = $cart['product_id'];
+								$quantity = $cart['quantity'];
+								
+								if ($quantity > 0) {
+									$options = (array)json_decode($cart['option']);
+									
+									
+									$ro_for_products[$key] = $ro_model->get_related_options_sets_by_poids($product_id, $options, true);
+									//$ro_for_products[$key] = $ro_model->get_related_options_sets_by_poids($product_id, $options);
+									
+									if ($ro_for_products[$key]) {
+										foreach ($ro_for_products[$key] as $ro_comb) {
+											if (!isset($ro_quantities[$ro_comb['relatedoptions_id']])) {
+												$ro_quantities[$ro_comb['relatedoptions_id']] = 0;
+											}
+											$ro_quantities[$ro_comb['relatedoptions_id']]+= $quantity;
+										}
+									}
+								}
+							}
+						} else {
+					
+							foreach ($this->session->data['cart'] as $key => $quantity) {
+								$product = unserialize(base64_decode($key));
+					
+								$product_id = $product['product_id'];
+					
+								// Options
+								if (!empty($product['option'])) {
+									$options = $product['option'];
+								} else {
+									$options = array();
+								}
+								
+								$ro_for_products[$key] = $ro_model->get_related_options_sets_by_poids($product_id, $options, true);
+								//$ro_for_products[$key] = $ro_model->get_related_options_sets_by_poids($product_id, $options);
+								
+								if ($ro_for_products[$key]) {
+									foreach ($ro_for_products[$key] as $ro_comb) {
+										if (!isset($ro_quantities[$ro_comb['relatedoptions_id']])) {
+											$ro_quantities[$ro_comb['relatedoptions_id']] = 0;
+										}
+										$ro_quantities[$ro_comb['relatedoptions_id']]+= $quantity;
+									}
+								}
+							}
+						}
+					}
+				}
+				
+				return $ro_for_products;
+				
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		
+		<operation>
+      <search position="after"><![CDATA[public function getProducts() {]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			
+			$ro_quantities = array();
+			$ro_for_products = $this->ro_get_products_data($ro_quantities);
+			if ($ro_for_products) {
+				$ro_settings = $this->config->get('related_options');
+			} else {
+				$ro_settings = false;
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		
+		<operation>
+      <search position="after"><![CDATA[if ($product_query->num_rows]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+
+			$ro_price = false;
+			if ( VERSION >= '2.1.0.0' ) {
+				$key = $cart['cart_id'];
+				$ro_cart_quantity = $cart['quantity'];
+			} else {
+				$ro_cart_quantity = $quantity;
+			}
+			
+			if ($ro_for_products && $ro_for_products[$key]) {
+				$ro_model = '';
+				$ro_weight = false;
+				
+				if ( isset($ro_settings['spec_price']) && $ro_settings['spec_price'] ) {
+					$ro_price = $this->ro_calc_price($product_query->row['price'], $ro_for_products[$key]);
+				}
+				
+				foreach ($ro_for_products[$key] as $ro_comb) {
+					if ($ro_comb['quantity'] < $ro_cart_quantity) {
+						$stock = false;
+					}
+					
+					if ( isset($ro_settings['spec_model']) && $ro_settings['spec_model'] ) {
+						if ($ro_settings['spec_model'] == 1) {
+							$ro_model = $ro_comb['model'];
+						} elseif ($ro_settings['spec_model'] == 2) {
+							$ro_model.= $ro_comb['model'];
+						} elseif ($ro_settings['spec_model'] == 3) {
+							if ($ro_model == '') $ro_model = $product_query->row['model'];
+							$ro_model.= $ro_comb['model'];	
+						}
+					}
+					
+					// Вес в связанных опциях
+					if (isset($ro_settings['spec_weight']) && $ro_settings['spec_weight'] ) {
+						
+						if ( $ro_comb['weight'] != 0 ) {
+							if ($ro_comb['weight_prefix'] == '=') {
+								$ro_weight = $ro_comb['weight'];
+							} elseif ($ro_comb['weight_prefix'] == '+') {
+								if ($ro_weight === false) $ro_weight = $product_query->row['weight'];
+								$ro_weight+= $ro_comb['weight'];
+							} elseif ($ro_comb['weight_prefix'] == '-') {
+								if ($ro_weight === false) $ro_weight = $product_query->row['weight'];
+								$ro_weight-= $ro_comb['weight'];
+							}
+						}
+					}
+					
+				}
+				
+				if ($ro_model) {
+					$product_query->row['model'] = $ro_model;
+				}
+				
+				if (isset($ro_settings['spec_weight']) && $ro_settings['spec_weight'] && $ro_weight !== false ) {
+					$product_query->row['weight'] = $ro_weight;
+				}
+				
+			}
+			
+
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		<operation>
+      <search position="after"><![CDATA[$price = $product_query->row['price'];]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			
+			
+			if ($ro_for_products && $ro_for_products[$key] && isset($ro_settings['spec_price']) && $ro_settings['spec_price'] && $ro_price!==false) {
+				$price = $ro_price;
+			}
+			
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		<operation>
+      <search position="before"><![CDATA[if ($product_discount_query->num_rows) {]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			// Скидки в связанных опциях
+			if ($ro_for_products && $ro_for_products[$key]
+			&& isset($ro_settings['spec_price']) && $ro_settings['spec_price']
+			&& isset($ro_settings['spec_price_discount']) && $ro_settings['spec_price_discount'] ) {
+			
+				// get first option combination with discount
+				foreach ($ro_for_products[$key] as $ro_comb) {
+					
+					if ($ro_comb['discounts']) {
+						$ro_discount_quantity = $ro_quantities[$ro_comb['relatedoptions_id']];
+						$product_ro_discount_query = $this->db->query("SELECT price FROM " . DB_PREFIX . "relatedoptions_discount
+																														WHERE relatedoptions_id = '" . (int)$ro_comb['relatedoptions_id'] . "'
+																														AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "'
+																														AND quantity <= '" . (int)$ro_discount_quantity . "'
+																														ORDER BY quantity DESC, priority ASC, price ASC LIMIT 1");
+						if ($product_ro_discount_query->num_rows) {
+							$product_discount_query = $product_ro_discount_query;
+							break;
+						}
+					}
+				}
+			}
+			
+			
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		<operation>
+      <search position="before"><![CDATA[if ($product_special_query->num_rows]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			// Акции в связанных опциях
+			
+			if ($ro_for_products && $ro_for_products[$key]
+			&& isset($ro_settings['spec_price']) && $ro_settings['spec_price']
+			&& isset($ro_settings['spec_price_special']) && $ro_settings['spec_price_special'] ) {
+			
+				// get first option combination with special
+				foreach ($ro_for_products[$key] as $ro_comb) {
+				
+					if ($ro_comb['specials']) {
+						$product_ro_special_query = $this->db->query("SELECT price FROM ".DB_PREFIX."relatedoptions_special 
+																													WHERE relatedoptions_id = '" . (int)$ro_comb['relatedoptions_id'] . "'
+																														AND customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "'
+																													ORDER BY priority ASC, price ASC LIMIT 1");
+						if ($product_ro_special_query->num_rows) {
+							$product_special_query = $product_ro_special_query;
+							break;
+						}
+					}
+				}
+			}
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+		
+		
+		<!-- 	as result of this model, sku, upc и location are getting not from order_product, but from current related_options data
+					it looks wrong, but it's a standard OpenCart algorithm (for model field ) -->
+					
+		
+		<operation error="log">
+			<search position="before" regex="true"><![CDATA[~\$this->data\[\$key\] = array\(|\$product_data\[\] = array\(~]]></search>
+			<add><![CDATA[
+			// Related Options PRO / Связанные опции PRO <<
+			
+			$ro_product_fields = array('sku'=>'','upc'=>'','ean'=>'','location'=>'');
+			
+			if ($ro_for_products && $ro_for_products[$key]) {
+			
+				foreach ($ro_for_products[$key] as $ro_comb) {
+				
+					if (isset($ro_settings['spec_sku']) && $ro_settings['spec_sku'] && $ro_comb['sku']) {
+						$ro_product_fields['sku'] = $ro_comb['sku'];
+					}
+					if (isset($ro_settings['spec_upc']) && $ro_settings['spec_upc'] && $ro_comb['upc']) {
+						$ro_product_fields['upc'] = $ro_comb['upc'];
+					}
+					if (isset($ro_settings['spec_ean']) && $ro_settings['spec_ean'] && $ro_comb['ean']) {
+						$ro_product_fields['ean'] = $ro_comb['ean'];
+					}
+					if (isset($ro_settings['spec_location']) && $ro_settings['spec_location'] && $ro_comb['location']) {
+						$ro_product_fields['location'] = $ro_comb['location'];
+					}
+				}
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO
+			
+			]]></add>
+		</operation>
+		
+		<operation error="log">
+			<search position="after" regex="true"><![CDATA[~\$this->data\[\$key\] = array\(|\$product_data\[\] = array\(~]]></search>
+			<add><![CDATA[
+			// Related Options PRO / Связанные опции PRO <<
+			
+			'sku'         => $ro_product_fields['sku'],
+			'upc'         => $ro_product_fields['upc'],
+			'ean'         => $ro_product_fields['ean'],
+			'location'    => $ro_product_fields['location'],
+			
+			// >> Related Options PRO / Связанные опции PRO
+			
+			]]></add>
+		</operation>
+					
+		<!--			
+		<operation error="log">
+			<search position="replace"><![CDATA[$this->data[$key] = array(]]></search>
+			<add><![CDATA[
+			// Related Options PRO / Связанные опции PRO <<
+			
+			
+			$this->data[$key] = array();
+			
+			if ($ro_for_products && $ro_for_products[$key]) {
+			
+				foreach ($ro_for_products[$key] as $ro_comb) {
+				
+					if (isset($ro_settings['spec_sku']) && $ro_settings['spec_sku'] && $ro_comb['sku']) {
+						$this->data[$key]['sku'] = $ro_comb['sku'];
+					}
+					if (isset($ro_settings['spec_upc']) && $ro_settings['spec_upc'] && $ro_comb['upc']) {
+						$this->data[$key]['upc'] = $ro_comb['upc'];
+					}
+					if (isset($ro_settings['spec_ean']) && $ro_settings['spec_ean'] && $ro_comb['ean']) {
+						$this->data[$key]['ean'] = $ro_comb['ean'];
+					}
+					if (isset($ro_settings['spec_location']) && $ro_settings['spec_location'] && $ro_comb['location']) {
+						$this->data[$key]['location'] = $ro_comb['location'];
+					}
+				}
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO
+			
+			// Related Options PRO / Связанные опции PRO   replaced : $this->data[$key] = array(
+			$this->data[$key] = $this->data[$key] + array(
+			
+			]]></add>
+		</operation>
+		-->
+		
+		
+	</file>
+	
+	<file name="catalog/controller/api/cart.php">
+		<operation error="log">
+			<search position="replace"><![CDATA[$json['products'][] = array(]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			
+			$json['products'][] = array();
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			
+			if (	$this->model_module_related_options->installed() ) {
+				$fields = $this->model_module_related_options->getAdditionalFields();
+				foreach ($fields as $field) {
+					if (isset($product[$field])) {
+						$json['products'][count($json['products'])-1][$field] = $product[$field];
+					}
+				}
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO
+			// Related Options PRO / Связанные опции PRO   replaced : $json['products'][] = array(
+			$json['products'][count($json['products'])-1] = $json['products'][count($json['products'])-1] + array(
+			]]></add>
+		</operation>
+	
+	</file>
+	
+	<file name="catalog/controller/api/order.php">
+		<operation error="log">
+			<search position="replace"><![CDATA[$order_data['products'][] = array(]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			
+			$order_data['products'][] = array();
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			
+			if (	$this->model_module_related_options->installed() ) {
+				$ro_settings = $this->config->get('related_options');
+				if (isset($ro_settings['spec_sku']) && $ro_settings['spec_sku'] && isset($product['sku'])) {
+					$order_data['products'][count($order_data['products'])-1]['sku'] = $product['sku'];
+				}
+				if (isset($ro_settings['spec_upc']) && $ro_settings['spec_upc'] && isset($product['upc'])) {
+					$order_data['products'][count($order_data['products'])-1]['upc'] = $product['upc'];
+				}
+				if (isset($ro_settings['spec_ean']) && $ro_settings['spec_ean'] && isset($product['ean'])) {
+					$order_data['products'][count($order_data['products'])-1]['ean'] = $product['ean'];
+				}
+				if (isset($ro_settings['spec_location']) && $ro_settings['spec_location'] && isset($product['location'])) {
+					$order_data['products'][count($order_data['products'])-1]['location'] = $product['location'];
+				}
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO
+			// Related Options PRO / Связанные опции PRO   replaced : $order_data['products'][] = array(
+			$order_data['products'][count($order_data['products'])-1] = $order_data['products'][count($order_data['products'])-1] + array(
+			]]></add>
+		</operation>
+	</file>
+	<!-- 
+	<file name="catalog/controller/api/order.php">
+		<operation error="log">
+			<search position="replace"><![CDATA[$json['products'][] = array(]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			
+			$json['products'][] = array();
+			$this->load->model('module/related_options');
+			if (	$this->model_module_related_options->installed() ) {
+				$ro_settings = $this->config->get('related_options');
+				if (isset($ro_settings['spec_sku']) && $ro_settings['spec_sku'] && isset($product['sku'])) {
+					$json['products'][count($json['products'])-1]['sku'] = $product['sku'];
+				}
+				if (isset($ro_settings['spec_upc']) && $ro_settings['spec_upc'] && isset($product['upc'])) {
+					$json['products'][count($json['products'])-1]['upc'] = $product['upc'];
+				}
+				if (isset($ro_settings['spec_ean']) && $ro_settings['spec_ean'] && isset($product['ean'])) {
+					$json['products'][count($json['products'])-1]['ean'] = $product['ean'];
+				}
+				if (isset($ro_settings['spec_location']) && $ro_settings['spec_location'] && isset($product['location'])) {
+					$json['products'][count($json['products'])-1]['location'] = $product['location'];
+				}
+			}
+			
+			// >> Related Options PRO / Связанные опции PRO
+			// Related Options PRO / Связанные опции PRO   replaced : $json['products'][] = array(
+			$json['products'][count($json['products'])-1] = $json['products'][count($json['products'])-1] + array(
+			]]></add>
+		</operation>
+	</file>
+	-->
+	
+	<file name="catalog/model/catalog/product.php">
+		<operation error="log">
+			<search position="after"><![CDATA[$sql .= " OR LCASE(p.model) = '" . $this->db->escape(utf8_strtolower($data['filter_name'])) . "'";]]></search>
+			<add><![CDATA[// Related Options PRO / Связанные опции PRO <<
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			
+			if (	$this->model_module_related_options->installed() ) {
+				$ro_settings = $this->config->get('related_options');
+				if (isset($ro_settings['spec_model']) && $ro_settings['spec_model']) {
+					if ($ro_settings['spec_model'] == 1) {
+						$sql .= " OR p.product_id IN ( SELECT RO.product_id FROM ".DB_PREFIX."relatedoptions RO 
+								where  LCASE(RO.model) = '" . $this->db->escape(utf8_strtolower($data['filter_name'])) . "' ) ";
+					} else {
+						$sql .= " OR p.product_id IN ( SELECT ROS.product_id FROM ".DB_PREFIX."relatedoptions_search ROS
+								where  LCASE(ROS.model) = '" . $this->db->escape(utf8_strtolower($data['filter_name'])) . "' ) ";
+					}
+				}
+				if (isset($ro_settings['spec_sku']) && $ro_settings['spec_sku']) {
+					$sql .= " OR p.product_id IN ( SELECT RO.product_id FROM ".DB_PREFIX."relatedoptions RO 
+							where  LCASE(RO.sku) = '" . $this->db->escape(utf8_strtolower($data['filter_name'])) . "' ) ";
+				}
+			}
+			// >> Related Options PRO / Связанные опции PRO]]></add>
+		</operation>
+	</file>
+	
+	
+  <!-- journal2 quickview fix -->
+  <file name="catalog/view/theme/*/template/journal2/quickview/quickview.tpl">
+		
+		<operation>
+      <search position="before"><![CDATA[</body>]]></search>
+			<ignoreif><![CDATA[<?php echo $footer; ?>]]></ignoreif>
+			<add><![CDATA[<?php /* <?php echo $footer; ?> */ ?>]]></add>
+		</operation>
+		
+	</file>
+	
+	<!-- pixel quick view product fix -->
+	<file name="catalog/view/theme/*/template/product/quick_view_product.tpl">
+		
+		<operation>
+      <search position="before"><![CDATA[</body>]]></search>
+			<ignoreif><![CDATA[<?php echo $footer; ?>]]></ignoreif>
+			<add><![CDATA[<?php /* <?php echo $footer; ?> */ ?>]]></add>
+		</operation>
+		
+	</file>
+	
+	<!-- rgen theme comp -->
+	<file name="catalog/view/theme/*/template/product/product.tpl">
+		
+		<operation>
+      <search position="before"><![CDATA[<?php if (!$quickview) { echo $footer; } else { ?>]]></search>
+			<ignoreif><![CDATA[<?php echo $footer; ?>]]></ignoreif>
+			<add><![CDATA[<?php /* <?php echo $footer; ?> */ ?>]]></add>
+		</operation>
+		
+	</file>
+	
+	
+	<!-- rgen theme -->
+	<file name="rgen/catalog/template/product/product_options.tpl,rgen/catalog/template/product/product_options1.tpl" error="skip">
+		<operation error="skip">
+			<!--<search position="ireplace" ><![CDATA[<?php echo $model; ?>]]></search>-->
+			<search position="replace" ><![CDATA[<?php echo $model; ?>]]></search>
+			<add><![CDATA[<?php	/* Related Options PRO / Связанные опции PRO */	echo "<font id='product_model'>".$model."</font>"; /* >> Related Options PRO / Связанные опции PRO */ ?>]]>
+      </add>
+		</operation>
+	</file>
+	
+	<!-- Pavilion fix  -->
+	<file name="catalog/view/theme/*/template/product/product.tpl">
+		<operation error="skip"> 
+			<search position="before" ><![CDATA[
+      <article id="product" class="tb_<?php echo $tbData->product_layout_design_id; ?>" itemscope itemtype="http://schema.org/Product">
+      ]]></search> 
+      <add><![CDATA[
+			<?php /* Related Options for Pavilion <?php echo $footer; ?> */  ?>
+      ]]></add>	
+		</operation>
+	</file>
+  
+	<!-- journal2 skip for mihoshop -->
+  <!-- <file name="catalog/view/theme/*/template/product/product.tpl"> -->
+	<file name="catalog/view/theme/*/template/product/product.tpl,catalog/view/theme/*/template/journal2/quickview/quickview.tpl,catalog/view/theme/*/template/product/quick_view_product.tpl">
+		
+		<operation error="log">
+      <search position="after"><![CDATA[$('#button-cart').on('click', function() {]]></search>
+			<add><![CDATA[// << Related Options PRO / Связанные опции PRO
+	<?php
+		
+		if ( isset($ro_installed) && $ro_installed ) {
+			if (isset($ro_settings['stock_control']) && $ro_settings['stock_control'] && isset($ro_data) && $ro_data ) {
+	?>
+	
+		if (!$('#button-cart').attr('allow_add_to_cart')) {
+			ro_stock_control(1);
+			return;
+		}
+		$('#button-cart').attr('allow_add_to_cart','');
+		
+	<?php
+			}
+		}
+	?>
+			
+// >> Related Options PRO / Связанные опции PRO ]]></add>
+		</operation>
+		
+    <operation error="log">
+			
+			<search position="before" index="1"><![CDATA[<?php echo $footer; ?>]]></search>
+			<add><![CDATA[<!-- Related Options PRO / Связанные опции PRO << -->
+
+			<script type="text/javascript">
+			
+				<?php
+					// << Product Image Option DropDown compatibility
+					if ( isset($text_select_your) && isset($options) && is_array($options) ) {
+						echo "var ro_piodd_select_texts = [];\n";
+						foreach ($options as $option) {
+							if ($option['type'] == 'image') {
+								echo "ro_piodd_select_texts[".$option['product_option_id']."] = '".$text_select_your.$option['name']."';\n";
+							}
+						}
+					
+					}
+					// >> Product Image Option DropDown compatibility
+				?>
+			
+				// << Product Image Option DropDown compatibility
+				function ro_piodd_set_value(product_option_id, value) {
+				
+					var radio_elems = $('input[type=radio][name="'+option_prefix+'['+product_option_id+']"]');
+					if (radio_elems.length) {
+						var piodd_option_div = radio_elems.closest('div[id^=option-]').find('[id^=image-option]');
+						if (piodd_option_div.length) {
+							
+							piodd_option_div.find('a.dd-option').removeClass('dd-option-selected');
+							piodd_option_div.find('input.dd-selected-value').val(value);
+							if (value) {
+								var piodd_selected_a = piodd_option_div.find('input.dd-option-value[value='+value+']').parent().addClass('dd-option-selected');
+								piodd_option_div.find('a.dd-selected').html('');
+								piodd_option_div.find('a.dd-selected').append( piodd_selected_a.find('img').clone().removeClass('dd-option-image').addClass('dd-selected-image') );
+								piodd_option_div.find('a.dd-selected').append( piodd_selected_a.find('label').clone().removeClass('dd-option-text').addClass('dd-selected-text') );
+							} else {
+								if (ro_piodd_select_texts[product_option_id]) {
+									piodd_option_div.find('a.dd-selected').html(ro_piodd_select_texts[product_option_id]);
+								}
+							}
+						}
+					}
+					
+				}
+				// >> Product Image Option DropDown compatibility
+			
+			
+				function ro_clear_options() {
+				
+					// << Product Image Option DropDown compatibility
+					options = $('input[type=radio][name^="'+option_prefix+'"]:checked');
+					for (i=0;i<options.length;i++) {
+
+						var product_option_id = ro_get_product_option_id_from_name($(options[i]).attr('name'));
+						ro_piodd_set_value(product_option_id, '');
+					}
+					// >> Product Image Option DropDown compatibility
+					
+					$('input[type=radio][name^="'+option_prefix+'"]').attr('checked', false);
+					
+					$('select[name^="'+option_prefix+'"]').val('');
+					
+					$('textarea[name^="'+option_prefix+'"]').val('')
+					
+					$('input[type=text][name^="'+option_prefix+'"]').val('');
+					
+					$('input[type=checkbox][name^="'+option_prefix+'"]').attr('checked', false);
+					
+					$('input[type=hidden][name^="'+option_prefix+'"]').val('')
+					
+					ro_options_values_access();
+					ro_set_block_options();
+					ro_set_journal2_options();
+					
+					$('#input-quantity').trigger('change');
+					
+					<?php if (isset($ro_theme_name) && $ro_theme_name=='journal2') { ?>
+					if (Journal.updatePrice) {
+						Journal.updateProductPrice();
+					}
+					<?php } ?>
+					
+					return false;
+				}
+				
+				// Product Block Option & Product Color Option compatibility
+				// make option block selected (the same as in original input/select)
+				function ro_set_block_options() {
+					if (use_block_options) {
+					
+						// Product Block Option & Product Color Option text clear
+						$('.option span[id^="option-text-"]').html('');
+						
+						$('select[name^="'+option_prefix+'["]').find('option').each( function () {
+							var poid = ro_get_product_option_id_from_name($(this).parent().attr('name'));
+							//$(this).parent().attr('name').substr(7, $(this).parent().attr('name').length-8);
+							
+							// Product Block Option
+							// disable all SELECT blocks
+							$('a[id^="block-"][option-text-id$="-'+poid+'"]').removeClass('block-active');
+							if ($(this).parent().val()) {
+								$('a[id^="block-"][option-text-id$="-'+poid+'"][option-value="'+$(this).parent().val()+'"]').addClass('block-active').click();
+							}
+							
+							// Product Color Option
+							$('a[id^="color-"][option-text-id$="-'+poid+'"]').removeClass('color-active');
+							if ($(this).parent().val()) {
+								$('a[id^="color-"][option-text-id$="-'+poid+'"][optval="'+$(this).parent().val()+'"]').addClass('color-active').click();
+							}
+							
+						});
+						
+						// block options use RADIOs for images
+						$('input[type=radio][name^="'+option_prefix+'["]').each( function () {
+							var poid = ro_get_product_option_id_from_name($(this).attr('name'));
+							//$(this).attr('name').substr(7, $(this).attr('name').length-8);
+							
+							// Product Block Option
+							// disable only current RADIO block
+							$('a[id^="block-"][option-text-id$="-'+poid+'"][option-value="'+$(this).val()+'"]').removeClass('block-active');
+							if ($(this).is(':checked')) {
+								$('a[id^="block-"][option-text-id$="-'+poid+'"][option-value="'+$(this).val()+'"]').addClass('block-active').click();
+							}
+							
+							// Product Color Option
+							$('a[id^="color-"][option-text-id$="-'+poid+'"][optval="'+$(this).val()+'"]').removeClass('color-active');
+							if ($(this).is(':checked')) {
+								$('a[id^="color-"][option-text-id$="-'+poid+'"][optval="'+$(this).val()+'"]').addClass('color-active').click();
+								
+							}
+							
+						});
+						
+					}
+					
+				}
+				
+			</script>
+			
+			
+			
+			<?php 
+			
+			//if (	$this->model_module_related_options->installed() ) {
+			if ( isset($ro_installed) &&	$ro_installed && isset($ro_data) && $ro_data ) {
+				
+				?>
+				
+				<style>
+					.ro_option_disabled { color: #e1e1e1; }
+				</style>
+			
+				<?php if ( $ro_theme_name == 'theme638' ) { ?>
+					<script src="catalog/view/theme/theme638/js/jquery.selectbox-0.2.min.js" type="text/javascript"></script>
+					<style>
+						.sbDisabled { padding-left:10px; padding-top:8px; padding-bottom:8px; opacity:0.4; line-height:37px; }
+					</style>
+				<?php } ?>
+				
+				<script type="text/javascript">
+				
+				var hide_inaccessible = <?php if (isset($ro_settings['hide_inaccessible']) && $ro_settings['hide_inaccessible']) echo "true"; else echo "false"; ?>;
+				var options_types = [];
+				var ro_data = <?php echo json_encode($ro_data); ?>;
+				var ro_product_options = <?php echo json_encode($ro_product_options); ?>;
+				var ro_step_by_step = <?php if (isset($ro_settings['step_by_step']) && $ro_settings['step_by_step']) echo "true"; else echo "false"; ?>;
+				var auto_select_last = <?php if (isset($ro_settings['select_first']) && $ro_settings['select_first'] == 2) echo "true"; else echo "false"; ?>;
+				var use_block_options = ($('a[id^=block-option][option-value]').length || $('a[id^=block-image-option][option-value]').length || $('a[id^=color-][optval]').length);
+				var use_journal2 = <?php echo (isset($ro_theme_name) && $ro_theme_name=='journal2') ? 'true' : 'false'; ?>;
+				var ro_theme_name = "<?php echo $ro_theme_name; ?>";
+				var ro_settings = <?php echo json_encode($ro_settings); ?>;
+				
+				var option_prefix = "option";
+				if ($('#mijoshop').length && $('[name^="option_oc["]').length) { // 
+					option_prefix = "option_oc";
+				}
+				var option_prefix_length = option_prefix.length;
+				
+				var all_select_ov = {};
+				$('select[name^="'+option_prefix+'["]').each( function (si, sel_elem) {
+					all_select_ov[sel_elem.name] = [];
+					
+					$.each(sel_elem.options, function (oi, op_elem) {
+						all_select_ov[sel_elem.name].push(op_elem.value);
+					});
+					
+				} );
+				
+				
+				var ro_options_steps = ro_get_options_steps();
+				var ro_all_options_values = [];
+				for (var i=0; i < ro_options_steps.length; i++) {
+					ro_all_options_values[ro_options_steps[i]] = ro_get_all_possible_option_values(ro_options_steps[i]);
+				}
+				
+				
+				<?php
+				
+				if (isset($options) && is_array($options)) {
+					foreach ($options as $option) {
+						echo "options_types[".$option['product_option_id']."]='".$option['type']."';\n";
+					}
+				}
+				
+				if ( isset($ros_to_select) && $ros_to_select ) {
+					echo "var ros_to_select = ".json_encode($ros_to_select).";";
+					echo "var filter_name = false;";
+				} elseif (isset($_GET['filter_name'])) {
+					echo "var filter_name=\"".$_GET['filter_name']."\";";
+				} elseif (isset($_GET['search'])) {
+					echo "var filter_name=\"".$_GET['search']."\";";
+				} else {
+					echo "var filter_name = false;";
+				}
+				
+				
+				?>
+				
+				(function ($) {
+					$.fn.toggleOption = function (value, show) {
+						/// <summary>Show or hide the desired option</summary>
+						return this.filter('select').each(function () {
+							var select = $(this);
+							if (typeof show === 'undefined') {
+								show = select.find('option[value="' + value + '"]').length == 0;
+							}
+							if (show) {
+								select.showOption(value);
+							}
+							else {
+								select.hideOption(value);
+							}
+						});
+					};
+					$.fn.showOption = function (value) {
+						/// <summary>Show the desired option in the location it was in when hideOption was first used</summary>
+						return this.filter('select').each(function () {
+							var select = $(this);
+							var found = select.find('option[value="' + value + '"]').length != 0;
+							if (found) return; // already there
+				
+							var info = select.data('opt' + value);
+							if (!info) return; // abort... hideOption has not been used yet
+				
+							var targetIndex = info.data('i');
+							var options = select.find('option');
+							var lastIndex = options.length - 1;
+							if (lastIndex == -1) {
+								select.prepend(info);
+							}
+							else {
+								options.each(function (i, e) {
+									var opt = $(e);
+									if (opt.data('i') > targetIndex) {
+										opt.before(info);
+										return false;
+									}
+									else if (i == lastIndex) {
+										opt.after(info);
+										return false;
+									}
+								});
+							}
+							return;
+						});
+					};
+					$.fn.hideOption = function (value) {
+						/// <summary>Hide the desired option, but remember where it was to be able to put it back where it was</summary>
+						return this.filter('select').each(function () {
+							var select = $(this);
+							var opt = select.find('option[value="' + value + '"]').eq(0);
+							if (!opt.length) return;
+				
+							if (!select.data('optionsModified')) {
+								// remember the order
+								select.find('option').each(function (i, e) {
+									$(e).data('i', i);
+								});
+								select.data('optionsModified', true);
+							}
+				
+							select.data('opt' + value, opt.detach());
+							return;
+						});
+					};
+				})(jQuery);					
+				
+				function ro_stock_control(add_to_cart) {
+				
+					<?php  if (!isset($ro_settings['stock_control']) || !$ro_settings['stock_control']) { ?>
+					if (add_to_cart) {
+						$('#button-cart').attr('allow_add_to_cart','allow_add_to_cart');
+						$('#button-cart').click();
+					}
+					return;
+					<?php } ?>
+				
+					var erros_msg = '<?php echo $entry_stock_control_error; ?>';
+					
+					var options_values = ro_get_options_values([]);
+					var roids = ro_get_current_ro_ids(options_values);
+					
+					$('.alert-warning, .alert-warning').remove();
+					
+					if (roids.length) {
+					
+						$.ajax({
+								url: '<?php echo HTTP_SERVER; ?>index.php?route=module/related_options/get_ro_free_quantity',
+								data: {roids: roids},
+								dataType : "text",         
+								success: function (data) { 
+								
+									if (parseInt(data) < parseInt( $('input[type=text][name=quantity]').val() )) {
+										$('.alert-warning, .alert-warning').remove();
+										$('#input-quantity').parent().after('<div class="alert alert-warning">' + erros_msg.replace('%s',parseInt(data)) + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+										
+									} else {
+																				
+										if (add_to_cart) {
+											$('#button-cart').attr('allow_add_to_cart','allow_add_to_cart');
+											$('#button-cart').click();
+										}
+									}
+								},
+								error: function(error) {
+									console.log(error);
+								}
+						});
+					} else { // if there's no selected related options combination - use standard algorithm
+						if (add_to_cart) {
+							$('#button-cart').attr('allow_add_to_cart','allow_add_to_cart');
+							$('#button-cart').click();
+						}
+					
+					}
+					
+				}
+				
+				function ro_get_current_ro_ids(options_values) {
+				
+					var ro_ids = [];
+				
+					for (var i in ro_data) {
+						if((ro_data[i] instanceof Function) ) { continue; }
+					
+						var ro_dt = ro_data[i];
+				
+						var all_ok;
+						for(var ro_id in ro_dt['ro']) {
+							if((ro_dt['ro'][ro_id] instanceof Function) ) { continue; }
+							
+							all_ok = true;
+							for(var product_option_id in ro_dt['ro'][ro_id]['options']) {
+								if((ro_dt['ro'][ro_id]['options'][product_option_id] instanceof Function) ) { continue; }
+								
+								if (!(product_option_id in options_values && options_values[product_option_id]==ro_dt['ro'][ro_id]['options'][product_option_id])) {
+									all_ok = false;
+								}
+							}
+							if (all_ok) ro_ids.push(ro_id); 
+						}
+						
+					}
+					return ro_ids;
+				}
+				
+				
+				
+				function ro_arrays_intersection(arr1, arr2) {
+					var new_arr = [];
+					
+					for (var i in arr1) {
+						if ($.inArray(arr1[i], arr2) != -1) {
+							new_arr.push(arr1[i]);
+						}
+					}
+					
+					return new_arr;
+					
+				}
+				
+				function ro_get_array_copy(arr) {
+				
+					var new_arr = [];
+					
+					for (var i in arr) {
+						if ( $.isArray(arr[i]) ) {
+							new_arr[i] = ro_get_array_copy(arr[i]);
+						} else {
+							new_arr[i] = arr[i];
+						}
+					}
+					
+					return new_arr;
+				}
+				
+				
+				function ro_get_all_possible_option_values(product_option_id) {
+					
+					var values = [];
+					
+					if ($('select[name="'+option_prefix+'['+product_option_id+']"]').length) {
+					
+						var select_options = all_select_ov[option_prefix+"["+product_option_id+"]"];
+						for (var i=0;i<select_options.length;i++) {
+							if (select_options[i]) {
+								values.push(select_options[i]);
+							}
+						}
+					
+					} else if ($('input[type=radio][name="'+option_prefix+'['+product_option_id+']"]').length) {
+						
+						$('input[type=radio][name="'+option_prefix+'['+product_option_id+']"]').each(function(){
+							values.push($(this).val());
+						});
+						
+					}
+					
+					return values;
+					
+				}
+				
+				// get available options values
+				// option_id - опция (product_option_id)
+				// param_options_values - current options values (selected) - only for related options
+				// param_skip_ropv_ids - don't make values addition for this related options combinations
+				function ro_get_accessible_option_values(option_id, param_options_values, param_skip_options) {
+				
+					// make copies od arrays
+					var options_values = ro_get_array_copy(param_options_values);
+					var skip_options = ro_get_array_copy(param_skip_options);
+					skip_options.push(option_id);
+					
+					for (var current_option_id in options_values) {
+						if ( !options_values[current_option_id].length && current_option_id != option_id) {
+							if ( $.inArray(current_option_id, skip_options) == -1 ) {
+								options_values[current_option_id] = ro_get_accessible_option_values(current_option_id, options_values, skip_options);
+							}
+						}
+					}
+					
+					var common_accessible_values = false;
+					
+					var possible_current_option_values = ro_all_options_values[option_id];
+					
+					for (var i in ro_data) {
+					
+						if ($.inArray(option_id,ro_data[i]['options_ids'])==-1) {
+							continue;
+						}
+						
+						var accessible_values = [];
+					
+						var ro_array = ro_data[i]['ro'];
+						
+						var options_for_check = []; // optimization
+						for(var current_option_id in options_values) {
+							if (current_option_id != option_id && options_values[current_option_id].length
+							&& $.inArray(current_option_id, skip_options) == -1 && $.inArray(current_option_id,ro_data[i]['options_ids'])!=-1) {
+								options_for_check.push(current_option_id);
+							}
+						}
+						
+						if (!options_for_check.length) {
+							if (ro_data[i]['options_ids'].length == 1) { // combination contains only one option (this option)
+								for(var ro_id in ro_array) {
+									if( !ro_array.hasOwnProperty(ro_id) ) continue;
+									if ( ro_array[ro_id]['options'][option_id] && $.inArray(ro_array[ro_id]['options'][option_id], accessible_values) == -1 ) {
+										accessible_values.push(ro_array[ro_id]['options'][option_id]);
+									}
+								}
+							} else {
+								accessible_values = ro_get_array_copy(possible_current_option_values);
+							}
+						} else {
+							for(var ro_id in ro_array) {
+								if((ro_array[ro_id] instanceof Function) ) { continue; }
+								
+								all_ok = true;
+								
+								for (var j =0; j < options_for_check.length; j++) {
+								
+									var current_option_id = options_for_check[j];
+								
+								//for(var current_option_id in options_values) {
+									
+									//if (current_option_id != option_id && options_values[current_option_id].length
+									//&& $.inArray(current_option_id, skip_options) == -1 && $.inArray(current_option_id,ro_data[i]['options_ids'])!=-1) {
+										
+										if ( $.inArray(ro_array[ro_id]['options'][current_option_id], options_values[current_option_id]) == -1  ) {
+											all_ok = false;
+										}
+										
+									//}
+									
+									if (!all_ok) {
+										break;
+									}
+									
+								}
+								
+								if (all_ok && ($.inArray(ro_array[ro_id]['options'][option_id], accessible_values) == -1 )) {
+									accessible_values.push(ro_array[ro_id]['options'][option_id]);
+									if (possible_current_option_values.length == accessible_values.length) { // optimization
+										break;
+									}
+								}
+								
+							}
+						}
+						
+						if (common_accessible_values === false) {
+							common_accessible_values = accessible_values;
+						} else {
+							common_accessible_values = ro_arrays_intersection(common_accessible_values, accessible_values);
+						}
+						
+					}
+					
+					return common_accessible_values;
+					
+				}
+				
+				// only for options with values
+				// returns array of accessible values
+				function ro_option_values_access(param_options_values, option_id) {
+					
+					var options_values = [];
+					for (var product_option_id in param_options_values) {
+						options_values[product_option_id] = [];
+						if (param_options_values[product_option_id]) {
+							options_values[product_option_id].push(param_options_values[product_option_id]);
+						}
+					}
+					
+					var skip_ropv_ids = [];
+					var accessible_values = ro_get_accessible_option_values(option_id, options_values, skip_ropv_ids)
+					
+					ro_set_accessible_values(option_id, accessible_values);
+					
+					return accessible_values;
+				}
+				
+				function ro_toggle_option_block(option_id, toggle_flag) {
+						
+					$('#input-option'+option_id).parent().toggle(toggle_flag);
+					
+				}
+				
+				function ro_option_is_available(option_id) {
+					
+					if ($('select[name="'+option_prefix+'['+option_id+']"]').length) {
+						return $('select[name="'+option_prefix+'['+option_id+']"] option[value][value!=""]:not(:disabled)').length ? true : false;
+					} else if ($('input[type=radio][name="'+option_prefix+'['+option_id+']"]').length) {
+						return $('input[type=radio][name="'+option_prefix+'['+option_id+']"]:not(:disabled)').length ? true : false;
+					}
+					
+				}
+				
+				function ro_hide_unavailable_option(option_id) {
+
+					if (ro_settings && ro_settings['hide_option']) {
+						ro_toggle_option_block(option_id, ro_option_is_available(option_id));
+					}
+				}
+				
+				function ro_unavailable_options_not_required(option_id) {
+					
+					if (ro_settings && ro_settings['unavailable_not_required']) {
+						var current_ids = [];
+						if ($('#ro_not_required').length) {
+							current_ids = $('#ro_not_required').val().split(',');
+						} else {
+							$('#product').append('<input type="hidden" name="ro_not_required" id="ro_not_required" value="">');
+						}
+						var new_ids = [];
+						for (var i in current_ids) {
+							if (current_ids[i] != option_id) {
+								new_ids.push(current_ids[i]);
+							}
+						}
+						if (!ro_option_is_available(option_id)) {
+							new_ids.push(option_id);
+						}
+						$('#ro_not_required').val( new_ids.toString());
+					}
+					
+				}
+				
+				function ro_set_accessible_values(option_id, accessible_values) {
+				
+					var current_value = ($('input[type=radio][name="'+option_prefix+'['+option_id+']"]:checked').val() || $('select[name="'+option_prefix+'['+option_id+']"]').val());
+				
+					if ($('select[name="'+option_prefix+'['+option_id+']"]').length) {
+					
+						if (current_value && $.inArray(current_value, accessible_values)==-1) {
+							$('select[name="'+option_prefix+'['+option_id+']"]').val("");
+						}
+						
+						if (hide_inaccessible) {
+						
+							select_options = all_select_ov[option_prefix+"["+option_id+"]"];
+							for (var i=0;i<select_options.length;i++) {
+								if (select_options[i]) {
+									option_value_disabled = ($.inArray(select_options[i],accessible_values) == -1);
+									// hiding options for IE
+									$('select[name="'+option_prefix+'['+option_id+']"]').toggleOption(select_options[i], !option_value_disabled);
+									
+								}
+							}
+							
+						} else {
+						
+							select_options = $('select[name="'+option_prefix+'['+option_id+']"]')[0].options;
+							for (var i=0;i<select_options.length;i++) {
+								if (select_options[i].value) {
+									option_value_disabled = ($.inArray(select_options[i].value,accessible_values) == -1);
+									select_options[i].disabled = option_value_disabled;
+									if (option_value_disabled) {
+										$(select_options[i]).addClass('ro_option_disabled');
+									} else {
+										$(select_options[i]).removeClass('ro_option_disabled');
+									}
+								}
+							}
+							
+						}
+						
+						if ( ro_theme_name == 'theme638' ) { // VIVA theme
+							$('select[name="'+option_prefix+'['+option_id+']"]').selectbox("detach");
+							
+							$('select[name="'+option_prefix+'['+option_id+']"]').selectbox({
+								effect: "slide",
+								speed: 400
+							});
+							
+						}
+						
+					} else if ($('input[type=radio][name="'+option_prefix+'['+option_id+']"]').length) {	
+						
+						if (current_value && $.inArray(current_value, accessible_values)==-1) {
+							$('input[type=radio][name="'+option_prefix+'['+option_id+']"]:checked')[0].checked=false;
+							
+							// << Product Image Option DropDown compatibility
+							var piodd_option_div = $('#image-option-'+option_id);
+							if (piodd_option_div.length) {
+								ro_piodd_set_value(option_id, '');
+							}
+							// >> Product Image Option DropDown compatibility
+						}
+						
+						radio_options = $('input[type=radio][name="'+option_prefix+'['+option_id+']"]');
+						for (var i=0;i<radio_options.length;i++) {
+							option_value_disabled = ($.inArray(radio_options[i].value,accessible_values) == -1);
+							$(radio_options[i]).prop('disabled', option_value_disabled); // hidden should be disabled too
+							
+							if (hide_inaccessible) {
+							
+								//$(radio_options[i]).attr('disabled', option_value_disabled); // disable anyway
+								
+								if ( ro_theme_name == 'theme638' ) { // VIVA theme
+									$(radio_options[i]).parent().toggle(!option_value_disabled);
+									
+									// style change for padding change
+									if (i == 0) {
+										if (option_value_disabled) {
+											if ($(radio_options[i]).parent().hasClass('radio')) {
+												$(radio_options[i]).parent().removeClass('radio');
+												$(radio_options[i]).parent().addClass('_radio_ro');
+											}
+										} else {
+											if ($(radio_options[i]).parent().hasClass('_radio_ro')) {
+												$(radio_options[i]).parent().removeClass('_radio_ro');
+												$(radio_options[i]).parent().addClass('radio');
+											}
+										}
+									}
+								} else {
+									$(radio_options[i]).parent().parent().toggle(!option_value_disabled);
+									$(radio_options[i]).toggle(!option_value_disabled);
+									
+									// style change for padding change
+									if (i == 0) {
+										if (option_value_disabled) {
+											if ($(radio_options[i]).parent().parent().hasClass('radio')) {
+												$(radio_options[i]).parent().parent().removeClass('radio');
+												$(radio_options[i]).parent().parent().addClass('_radio_ro');
+											}
+										} else {
+											if ($(radio_options[i]).parent().parent().hasClass('_radio_ro')) {
+												$(radio_options[i]).parent().parent().removeClass('_radio_ro');
+												$(radio_options[i]).parent().parent().addClass('radio');
+											}
+										}
+									}
+								} 
+								
+								
+								
+								
+								// << Product Image Option DropDown compatibility
+								var piodd_option_div = $('#image-option-'+option_id);
+								var piodd_value = piodd_option_div.find('ul.dd-options input.dd-option-value[value='+radio_options[i].value+']');
+								if (piodd_value.length) {
+									piodd_value.parent().toggle(!option_value_disabled);
+								}
+								// >> Product Image Option DropDown compatibility
+							
+							} else {
+								
+								if (option_value_disabled) {
+									$(radio_options[i]).parent().fadeTo("fast", 0.2);
+								} else {
+									$(radio_options[i]).parent().fadeTo("fast", 1);
+								}
+								
+								// << Product Image Option DropDown compatibility
+								// make copies of unavailable elements, originals hide in hidden div, when element became available again - place it back
+								var piodd_option_div = $('#image-option-'+option_id);
+								
+								if ( piodd_option_div.find('ul.dd-options').length ) {
+									
+									var ro_hidden_div_id = piodd_option_div.attr('id')+'-ro-hidden';
+									
+									if ( !$('#'+ro_hidden_div_id).length ) {
+										piodd_option_div.after('<div id="'+ro_hidden_div_id+'" style="display: none;"></div>');
+									}
+									var ro_hidden_div = $('#'+ro_hidden_div_id);
+									
+									
+									var clone_id = 'clone_'+radio_options[i].value;
+									if (option_value_disabled) {
+									
+										var piodd_value = piodd_option_div.find('ul.dd-options input.dd-option-value[value='+radio_options[i].value+']');
+										
+										if (piodd_value.length) {
+									
+											if ( !piodd_option_div.find('[clone_id='+clone_id+']').length ) {
+												var ro_clone = piodd_value.parent().clone(true, true).appendTo(ro_hidden_div);
+												ro_clone.clone().insertAfter(piodd_value.parent()).attr('clone_id', clone_id).fadeTo('fast', 0.2);
+												piodd_value.parent().remove();
+											}
+										}
+										
+									} else {
+										if (ro_hidden_div.find('[value='+radio_options[i].value+']').length) {
+											ro_hidden_div.find('[value='+radio_options[i].value+']').parent().clone(true, true).insertAfter(piodd_option_div.find('[clone_id='+clone_id+']'));
+											ro_hidden_div.find('[value='+radio_options[i].value+']').parent().remove();
+											piodd_option_div.find('[clone_id='+clone_id+']').remove();
+										}
+									}
+									
+								}
+								// >> Product Image Option DropDown compatibility
+								
+							}
+							
+							
+						}
+						
+						
+						
+					}
+					
+					ro_hide_unavailable_option(option_id);
+					ro_unavailable_options_not_required(option_id);
+				
+				}
+				
+				function ro_get_options_values(options_keys) {
+				
+					var options_values = {};
+				
+					$('select[name^="'+option_prefix+'["], input[type=radio][name^="'+option_prefix+'["]').each(function(){
+						option_id = ro_get_product_option_id_from_name( $(this).attr('name') );
+						
+						if ($.inArray(option_id,ro_product_options) != -1) {
+							
+							if ($.inArray(option_id,options_keys) == -1) {
+								options_values[option_id] = 0;
+								options_keys.push(option_id);
+							}
+							
+							if ( $(this).find('option[value]').length ) { // select
+								options_values[option_id] = $(this).val();
+							} else { // radio
+								if ( $(this).is(':checked') ) {
+									options_values[option_id] = $(this).val();
+								}
+							}
+							
+							
+						}
+					});
+					
+					return options_values;
+				
+					
+				}
+				
+				// correct auto selection for options some values already selected
+				function ro_use_first_values(set_anyway) {
+					
+					var options_values = ro_get_options_values([]);
+					
+					var selected_options = [];
+					var has_selected = false;
+					for (var optkey in options_values) {
+						if((options_values[optkey] instanceof Function) ) { continue; }
+						if (options_values[optkey]) {
+							has_selected = true;
+							selected_options.push(optkey);
+							//break;
+						}
+					}
+					
+					if (has_selected || set_anyway) {
+					
+						for (var i in ro_options_steps) {
+							
+							var product_option_id = ro_options_steps[i];
+							
+							if ( $.inArray(product_option_id, ro_product_options) != -1 ) {
+							
+								var product_option_value_id = false;
+								
+								if ($('select[name="'+option_prefix+'['+product_option_id+']"]').length) {
+									var product_option_value_id = $('select[name="'+option_prefix+'['+product_option_id+']"] option[value][value!=""]:not(:disabled)').val();
+								} else if ($('input[type=radio][name="'+option_prefix+'['+product_option_id+']"]').length > 0) {
+									var product_option_value_id = $('input[type=radio][name="'+option_prefix+'['+product_option_id+']"]:not(:disabled):first').val();
+								}
+								
+								if (product_option_value_id && ($.inArray(product_option_id, selected_options) != -1 || set_anyway) ) {
+									ro_set_option_value(product_option_id, product_option_value_id);
+									ro_options_values_access();
+									ro_set_block_options();
+									ro_set_journal2_options();
+								}
+								
+							}
+							
+						}
+					
+					}
+					
+					
+				}
+				
+				function ro_journal2_set_value(product_option_value_id) {
+					if (use_journal2 && $('li[data-value="'+product_option_value_id+'"]').length) {
+						$('li[data-value="'+product_option_value_id+'"]').siblings('li').removeClass('selected');
+						$('li[data-value="'+product_option_value_id+'"]').removeClass('selected').addClass('selected');
+					}
+				}
+				
+				function ro_set_option_value(product_option_id, product_option_value_id) {
+					
+					if ($('select[name="'+option_prefix+'['+product_option_id+']"]').length > 0) {
+						$('[name="'+option_prefix+'['+product_option_id+']"]').val(product_option_value_id);
+						
+						ro_journal2_set_value(product_option_value_id);
+						
+					} else if ($('input[type=radio][name="'+option_prefix+'['+product_option_id+']"]').length > 0) {
+						$('input[type=radio][name="'+option_prefix+'['+product_option_id+']"]').prop('checked', false);
+						$('input[type=radio][name="'+option_prefix+'['+product_option_id+']"][value='+product_option_value_id+']').prop('checked', true);
+						
+						// << Product Image Option DropDown compatibility
+						ro_piodd_set_value(product_option_id, product_option_value_id);
+						// >> Product Image Option DropDown compatibility
+						
+						ro_journal2_set_value(product_option_value_id);
+						
+					}
+					
+				}
+				
+				function ro_set_selected_combination(ro_id, skip_access) {
+				
+					if (ro_data) {
+						for (var i in ro_data) {
+							if (ro_data[i]['ro'][ro_id]) {
+								
+								for (var product_option_id in ro_data[i]['ro'][ro_id]['options']) {
+									ro_set_option_value(product_option_id, ro_data[i]['ro'][ro_id]['options'][product_option_id]);
+								}
+								
+								break;
+							}
+						}
+					}
+				
+					if ( typeof(skip_access) == 'undefined' || !skip_access ) {
+
+						ro_options_values_access();
+						ro_set_block_options();
+						ro_set_journal2_options();
+						
+					}
+					
+				}
+				
+				function ro_get_product_option_id_from_name(name) {
+					return name.substr(option_prefix_length+1, name.indexOf(']')-(option_prefix_length+1) )
+				}
+				
+				// for step-by-step way
+				function ro_get_options_steps() {
+					var options_steps = [];
+					var product_option_id = "";
+					
+					//for (var i=0;i<$('input[name^="'+option_prefix+'["]').length;i++) {
+					$('input[name^="'+option_prefix+'["], select[name^="'+option_prefix+'["]').each(function(){
+					
+						product_option_id = ro_get_product_option_id_from_name($(this).attr('name'));
+						//if (!isNaN(product_option_id)) product_option_id = parseInt(product_option_id);
+						
+						if ($.inArray(product_option_id, ro_product_options) != -1) {
+							if ($.inArray(product_option_id, options_steps) == -1) {
+								options_steps.push(product_option_id);
+							}
+						}
+						
+					});
+					
+					return options_steps;
+				}
+				
+				function ro_options_values_access() {
+					
+					if (!ro_data || !Object.keys(ro_data).length) return;
+					
+					if (ro_step_by_step) {
+					
+						var prev_options_values = {};
+						var prev_options = [];
+						var option_accessible_values = [];
+						var one_prev_value_is_not_set = false;
+						
+						for (var i=0;i<ro_options_steps.length;i++) {
+							if (i>0) {
+								// if previous option value is selected or if previous option has no available values
+								//if (prev_options[i-1] || (one_prev_value_is_set && (!prev_option_accessible_values || prev_option_accessible_values.length==0) ) ) {
+								if (!one_prev_value_is_not_set) {
+									// limitaion on previous
+									option_accessible_values = ro_option_values_access(prev_options_values, ro_options_steps[i]);
+									
+								} else {
+									// disable all
+									ro_set_accessible_values(ro_options_steps[i], []);
+									option_accessible_values = [];
+								}
+							}
+							prev_options.push( ($('input[type=radio][name="'+option_prefix+'['+ro_options_steps[i]+']"]:checked').val() || $('select[name="'+option_prefix+'['+ro_options_steps[i]+']"]').val()) );
+							//one_prev_value_is_set = one_prev_value_is_set || prev_options[i];
+							prev_options_values[ro_options_steps[i]] = prev_options[prev_options.length-1];
+							
+							if ((option_accessible_values.length || i==0) && !prev_options[i] ) { // option has available values, but none of them is selected
+								one_prev_value_is_not_set = true;
+							}
+							
+						}
+					
+					} else {
+					
+						var options_keys = [];
+						var options_values = ro_get_options_values(options_keys);
+						
+						for (var i=0;i<options_keys.length;i++) {
+							ro_option_values_access(options_values, options_keys[i]);
+						}
+						
+					}
+					
+					ro_stock_control(0);
+					
+					
+					ro_check_block_options();
+					
+					ro_check_auto_select();
+					
+					<?php if (isset($ro_settings['spec_model']) && $ro_settings['spec_model']) { ?>
+						ro_set_model();
+					<?php } ?>
+					
+					<?php if (isset($ro_settings['spec_ofs']) && $ro_settings['spec_ofs']) { ?>
+						ro_set_stock();
+					<?php } ?>
+					
+				}
+				
+				// autoselection for last available option value
+				function ro_check_auto_select() {
+				
+					if (auto_select_last) {
+					
+						for (var i in ro_options_steps) {
+							
+							var product_option_id = ro_options_steps[i];
+							
+							if ( $('select[name="'+option_prefix+'['+product_option_id+']"]').length ) {
+								
+								var options_elems = $('select[name="'+option_prefix+'['+product_option_id+']"]').find('option[value][value!=""]:not(:disabled)');
+								
+								if (options_elems.length == 1 && !$(options_elems[0]).is(':selected')) {
+								
+									var product_option_value_id = $(options_elems[0]).val();
+									
+									ro_set_option_value(product_option_id, product_option_value_id);
+									$(options_elems[0]).parent().change();
+									return;
+								}
+								
+							} else if ( $('input:radio[name="'+option_prefix+'['+product_option_id+']"]').length ) {
+							
+								var radio_elems = $('input:radio[name="'+option_prefix+'['+product_option_id+']"]:not(:disabled):visible');
+								
+								if (radio_elems.length == 1 && !$(radio_elems[0]).is(':checked')) {
+									
+									var product_option_value_id = $(radio_elems[0]).val();
+									
+									ro_set_option_value(product_option_id, product_option_value_id);
+									
+									$(radio_elems[0]).change();
+									return;
+									
+								}
+							
+							}
+							
+						}
+					
+					}
+				
+				}
+				
+				// autorelection for first values
+				function ro_auto_select_first() {
+					
+					if (ro_settings && ro_settings['select_first'] && ro_settings['select_first'] == 1) {
+						
+						for (var i in ro_options_steps) {
+							if (!ro_options_steps.hasOwnProperty(i)) continue;
+							
+							var product_option_id = ro_options_steps[i];
+							
+							if ( $('select[name="'+option_prefix+'['+product_option_id+']"]').length ) {
+								
+								var elem = $('select[name="'+option_prefix+'['+product_option_id+']"]');
+								if ( !elem.val() ) {
+									
+									var elem_option = elem.find('option[value][value!=""]:not(:disabled)');
+									if (elem_option.length) {
+										elem.val(elem_option.val());
+										elem.change();
+									}
+									
+								}
+								
+							} else if ( $('input:radio[name="'+option_prefix+'['+product_option_id+']"]').length ) {
+								
+								if ( !$('input:radio[name="'+option_prefix+'['+product_option_id+']"]:checked').length ) {
+									var elem = $('input:radio[name="'+option_prefix+'['+product_option_id+']"]:not(:disabled):first');
+									if (elem.length) {
+										elem.prop('checked', true);
+										elem.change();
+										
+									}
+								}
+								
+							}
+							
+						}
+						
+					}
+				
+				}
+				
+				function ro_set_model() {
+				
+					var options_values = ro_get_options_values([]);
+					var ro_ids = ro_get_current_ro_ids(options_values);
+					var product_model = "<?php echo addslashes($model); ?>";
+					var model = "";
+					
+					if (ro_ids.length) {
+						for (var i in ro_data) {
+							var ro_dt = ro_data[i];
+							
+							for (var j in ro_ids) {
+								var ro_id = ro_ids[j];
+								if (ro_dt['ro'][ro_id] && ro_dt['ro'][ro_id]['model']) {
+									if (ro_settings['spec_model'] == 1) {
+										model = ro_dt['ro'][ro_id]['model'];
+									} else if (ro_settings['spec_model'] == 2 || ro_settings['spec_model'] == 3) {
+										model+= ro_dt['ro'][ro_id]['model'];
+									}
+								}
+							}
+						}
+					}
+					
+					if (model) {
+						if (ro_settings['spec_model'] == 3) {
+							model = product_model + model;
+						}
+					} else {
+						model = product_model;
+					}
+					$('#product_model').html(model);
+				}
+				
+				function ro_set_stock() {
+				
+				
+					var stock_text = "<?php echo addslashes($text_stock); ?>";
+					var stock = "<?php echo addslashes($stock); ?>";
+					if (use_journal2) {
+						var journal2_stock_status = "<?php echo isset($stock_status) ? $stock_status : ''; ?>";
+					}
+					
+					var options_values = ro_get_options_values([]);
+					var ro_ids = ro_get_current_ro_ids(options_values);
+					
+					if (ro_ids.length) {
+						for (var i in ro_data) {
+							var ro_dt = ro_data[i];
+							
+							for (var j in ro_ids) {
+								var ro_id = ro_ids[j];
+							
+								if (ro_dt['ro'][ro_id] && ro_dt['ro'][ro_id]['stock']) {
+									var stock = ro_dt['ro'][ro_id]['stock'];
+									
+									if (use_journal2) {
+										var journal2_stock_status = ro_prices[roid]['in_stock'] ? 'instock' : 'outofstock';
+									}
+									
+									break;
+								}
+							}
+						}
+					}
+					
+					if (use_journal2) {
+						//journal2 uses specific price and stock update, but it's slow and doesn't swith block class (style)
+						$('#product .p-stock .journal-stock').removeClass('instock, outofstock').addClass(journal2_stock_status);
+						$('#product .p-stock .journal-stock').html(stock);
+					} else {
+						$('#product_stock').html(stock);
+					}
+					
+					
+				}
+				
+				function ro_set_combination_by_model(model) {
+				
+					if (model && ro_data) {
+						for (var i in ro_data) {
+							for (var ro_id in ro_data[i]['ro']) {
+								if (ro_data[i]['ro'][ro_id][model] && ro_data[i]['ro'][ro_id][model].toLowerCase() == model.toLowerCase()) {
+									ro_set_selected_combination(ro_id);
+									return true;
+								}
+							}
+						}
+					}
+				
+					return false;
+				}
+				
+				// Block Option & journal2 compatibility
+				// show/hide enable/disable options block
+				function ro_check_block_options() {
+			
+					if (use_block_options || use_journal2) {
+						
+						var available_values = [];
+						
+						// block options use SELECTs for select & radio
+						$('select[name^="'+option_prefix+'["]').find('option').each( function () {
+							
+							if ($(this).val()) {
+								if (hide_inaccessible) {
+									available_values.push( $(this).val() );
+								} else {
+									if (! $(this).attr('disabled')) {
+										available_values.push( $(this).val() );
+									}
+								}
+							}
+							
+						});
+						
+						// block options use RADIOs for images
+						$('input[type=radio][name^="'+option_prefix+'["]').each( function () {
+							
+							if (hide_inaccessible) {
+								if ($(this)[0].style.display != 'none') {
+									available_values.push( $(this).val() );
+								}
+							} else {
+								if (!$(this).attr('disabled')) {
+									available_values.push( $(this).val() );
+								}
+							}
+							
+						});
+						
+						// Product Block Option Module
+						if (use_block_options) {
+							$('a[id^=block-option],a[id^=block-image-option]').each( function () {
+								if ($.inArray($(this).attr('option-value'), available_values) == -1) {
+									$(this).removeClass('block-active');
+									if (hide_inaccessible) {
+										$(this).hide();
+									} else {
+										if (!$(this).attr('disabled')) {
+											$(this).attr('disabled', true);
+											$(this).fadeTo("fast", 0.2);
+										}
+									}
+								} else {
+									if (hide_inaccessible) {
+										$(this).show();
+									} else {
+										if ($(this).attr('disabled')) {
+											$(this).attr('disabled', false);
+											$(this).fadeTo("fast", 1);
+										}
+									}
+								}
+								
+							} );
+						}
+						
+						// Journal2
+						if (use_journal2) {
+						
+							$('#product').find('li[data-value]').each(function() {
+							
+								if ($.inArray($(this).attr('data-value'), available_values) == -1) {
+									$(this).removeClass('selected');
+									if (hide_inaccessible) {
+										$(this).hide();
+									} else {
+										if (!$(this).attr('disabled')) {
+											$(this).attr('disabled', true);
+											$(this).fadeTo("fast", 0.2);
+										}
+									}
+								} else {
+									if (hide_inaccessible) {
+										$(this).show();
+									} else {
+										if ($(this).attr('disabled')) {
+											$(this).attr('disabled', false);
+											$(this).fadeTo("fast", 1);
+										}
+									}
+								}
+								
+								// change standart Journal2 function
+								$(this).unbind('click');
+								
+								
+								$(this).click(function () {
+									if ($(this).attr('disabled')) {
+										return;
+									}
+									$(this).siblings().removeClass('selected');
+									$(this).addClass('selected');
+									$(this).parent().siblings('select').find('option[value=' + $(this).attr('data-value') + ']').attr('selected', 'selected');
+									$(this).parent().siblings('select').trigger('change');
+									
+									$(this).parent().parent().find('.radio input[type=radio][name^="'+option_prefix+'"]').attr('checked', false);
+									$(this).parent().parent().find('.radio input[type=radio][name^="'+option_prefix+'"][value='+$(this).attr('data-value')+']').attr('checked', true).trigger('change');
+									
+									if (Journal.updatePrice) {
+										Journal.updateProductPrice();
+									}
+									
+								});
+								
+								
+							});
+							
+						}
+						
+					}
+					
+				}
+				
+				// Journal2 compatibility
+				// make option block selected (the same as in original input/select)
+				function ro_set_journal2_options() {
+					
+					if (use_journal2) {
+						$('select[name^="'+option_prefix+'["]').find('option').each( function () {
+							var poid = $(this).parent().attr('name').substr(7, $(this).parent().attr('name').length-8);
+							
+							// выключаем все блоки для SELECT
+							//$(this).parent().parent().find('li[data-value]').removeClass('selected');
+							
+							if ($(this).parent().val()) {
+								$(this).parent().parent().find('li[data-value='+$(this).parent().val()+']').removeClass('selected').addClass('selected');
+							} else {
+								$(this).parent().parent().find('li[data-value]').removeClass('selected');
+							}
+							
+						});
+						
+						// block options use RADIOs for images
+						$('input[type=radio][name^="'+option_prefix+'["]').each( function () {
+							var poid = $(this).attr('name').substr(7, $(this).attr('name').length-8);
+							
+							// turn off only current block for RADIO
+							//$(this).parent().find('li[data-value]').removeClass('selected');
+
+							if ($(this).is(':checked')) {
+							
+								$('#input-option'+poid).parent().find('li[data-value='+$(this).val()+']').removeClass('selected').addClass('selected');
+							} else {
+							
+								$('#input-option'+poid).parent().find('li[data-value]').removeClass('selected');
+							}
+							
+						});
+						
+					}
+					
+				}
+				
+				
+				
+				$('select[name^="'+option_prefix+'"]').change(function(){
+					ro_options_values_access();
+				})
+				
+				$('input[type=radio][name^="'+option_prefix+'"]').change(function(){
+					ro_options_values_access();
+				})
+				
+				$("input[type=text][name=quantity]").change(function(){
+					ro_stock_control(0);
+				})
+				
+				
+				ro_options_values_access();
+				
+				$(document).ready( function() {
+				
+					if ( typeof(ros_to_select) != 'undefined' && ros_to_select && ros_to_select.length) {
+					
+						var ro_id = false;
+						for (var i in ros_to_select) {
+							if (ros_to_select.hasOwnProperty(i)) {
+								var ro_id = ros_to_select[i];
+								ro_set_selected_combination(ro_id, true); // without limitaions
+							}
+						}
+						if (ro_id) {
+							ro_set_selected_combination(ro_id); /// with limitations
+						}
+					
+					} else {
+				
+						// if there's filter and it's equal to related options model - this related options combination should be selected
+						if (!ro_set_combination_by_model(filter_name)) { // if there's not filter relevant to related options 
+							// if any value is selected - all values should be reselected (to be relevant to available related options)
+							//if (ro_default !== false) {
+							//	ro_set_selected_combination(ro_default);
+							//} else {
+								<?php if (!isset($poip_ov)) { ?>
+									setTimeout(function () { ro_use_first_values(); }, 1); // if any combination is selected (may be other extension), check it and change if it's not relevant to available related options
+								<?php } ?>
+							//}
+						}
+						ro_options_values_access();
+						ro_auto_select_first();
+					}
+					
+					
+				
+				});
+				
+				<?php
+				
+					if (isset($ro_settings) && isset($ro_settings['show_clear_options']) && $ro_settings['show_clear_options']) {
+						if ((int)$ro_settings['show_clear_options'] == 1) { ?>
+							$(document).ready( function() {
+								$('#product').find('h3').after('<div class="form-group"><a href="#" id="clear_options"><?php echo $text_ro_clear_options; ?></a></div>');
+							});
+						<?php } else { ?>
+							$(document).ready( function() {
+								<?php if ($ro_theme_name=='journal2') { ?>
+									$('#product .options').append('<div class="form-group"><a href="#" id="clear_options" ><?php echo $text_ro_clear_options; ?></a></div>');
+									//$('#product').find('h3:first').parent().append('<div class="form-group"><a href="#" id="clear_options" ><?php echo $text_ro_clear_options; ?></a></div>');
+								<?php } else { ?>
+									$('#product #input-quantity').parent().before('<div class="form-group"><a href="#" id="clear_options"><?php echo $text_ro_clear_options; ?></a></div>');
+								<?php } ?>
+							});
+						<?php } ?>
+						
+						$('#product').on('click', '#clear_options', function(e){
+							e.preventDefault();
+							ro_clear_options();
+						});
+						
+				<?php		
+					}
+				?>
+				
+				if (use_journal2) { // compatibility for live price update with specials in related options
+				
+					var div_prod_opt = $('div.product-options');
+				
+					if (div_prod_opt.length == 1) {
+						if ( div_prod_opt.find('div.price').find('span.product-price').length ) {
+							div_prod_opt.find('div.price').find('span.product-price').after('<span class="price-old" style="display: none"></span><span class="price-new" style="display: none"></span>');
+							
+						} else if ($('div.price').find('span.price-old').length) {
+							div_prod_opt.find('div.price').find('span.price-old').before('<span class="product-price" itemprop="price" style="display: none"></span>');
+						}
+						
+						setInterval( function() {
+						
+							if ( div_prod_opt.find('div.price').find('span.product-price').html() && div_prod_opt.find('div.price').find('span.price-old').html() && div_prod_opt.find('div.price').find('span.price-new').html() ) {
+							
+								if ( div_prod_opt.find('div.price').find('span.price-old').html() == div_prod_opt.find('div.price').find('span.price-new').html()
+									|| Number($('div.product-options').find('div.price').find('span.price-new').html().replace(/\D/g, '')) == 0 ) {
+									div_prod_opt.find('div.price').find('span.price-old').hide();
+									div_prod_opt.find('div.price').find('span.price-new').hide();
+									div_prod_opt.find('div.price').find('span.product-price').show();
+								} else {
+									div_prod_opt.find('div.price').find('span.price-old').show();
+									div_prod_opt.find('div.price').find('span.price-new').show();
+									div_prod_opt.find('div.price').find('span.product-price').hide();
+								}
+							}
+						}, 200 );
+					
+					}
+					
+				}
+				
+				</script>
+				
+			
+
+			
+			<?php } ?>
+
+<!-- >> Related Options PRO / Связанные опции PRO -->]]></add>
+		</operation>
+		
+<!-- <?php	/* Related Options PRO / Связанные опции PRO */	echo "<font id='product_model'>".$model."</font>"; /* >> Related Options PRO / Связанные опции PRO */ ?> -->		
+		
+		<operation error="skip">
+			<!--<search position="ireplace" ><![CDATA[<?php echo $model; ?>]]></search>-->
+			<search position="replace" ><![CDATA[<?php echo $model; ?>]]></search>
+			<add><![CDATA[<?php	/* Related Options PRO / Связанные опции PRO */	echo "<font id='product_model'>".$model."</font>"; /* >> Related Options PRO / Связанные опции PRO */ ?>]]>
+      </add>
+		</operation>
+		
+		<operation error="skip">
+			<!--<search position="ireplace" ><![CDATA[<?php echo $model; ?>]]></search>-->
+			<search position="replace" ><![CDATA[<?php echo $stock; ?>]]></search>
+			<add><![CDATA[<?php	/* Related Options PRO / Связанные опции PRO */	echo "<font id='product_stock'>".$stock."</font>"; /* >> Related Options PRO / Связанные опции PRO */ ?>]]>
+      </add>
+		</operation>
+		
+		<!--
+		<operation error="skip">
+			<search position="after" offset="1"><![CDATA[function process_discounts(price, quantity)]]></search>
+			<add><![CDATA[
+      // Related Options PRO / Связанные опции PRO <<
+					<?php
+					$this->load->model('module/related_options');
+						$ro_model = "";
+						if ( $this->model_module_related_options->installed() ) {
+							$ro_settings = $this->config->get('related_options');
+							if (isset($ro_settings['spec_price']) && $ro_settings['spec_price'] && isset($ro_settings['spec_price_discount']) && $ro_settings['spec_price_discount']) {
+					?>
+					
+						var options_values = get_options_values([]);
+						var roid = get_current_ro_id(options_values);
+						
+						if (roid!=-1 && ro_prices[roid]['discounts'].length > 0) {
+						
+							for (var disc_cnt = 0; disc_cnt < ro_prices[roid]['discounts'].length; disc_cnt++ ) {
+								disc_array = ro_prices[roid]['discounts'][disc_cnt];
+								if (disc_array['price'] > 0 && quantity >= disc_array['quantity'] && disc_array['price'] < price) {
+									price = disc_array['price'];
+								}
+							}
+							
+							return price;
+						}
+						
+					<?php
+							}
+						}
+					?>
+					
+			// >> Related Options PRO / Связанные опции PRO]]>
+      </add>
+		</operation>
+		-->
+		
+	</file>
+	
+	<!-- Journal2 comp -->
+	<file name="catalog/controller/journal2/ajax.php" error="skip">
+		<operation error="skip">
+			<search position="before" ><![CDATA[$product_options = $this->model_catalog_product->getProductOptions($product_id);]]></search>
+			<add><![CDATA[
+			/* Related Options PRO / Связанные опции PRO */
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			
+			$ro_special = false;
+			$ro_price_prefix = '';
+			$ro_stock = '';
+			$ro_price = $this->model_module_related_options->getJournal2Price($product_id, $price, $ro_special, $ro_stock);
+			if ($ro_price !== false) {
+				
+				$price = $ro_price;
+			
+				if ($ro_special) {
+					$special = $ro_special;
+				}
+			}
+			
+			/* >> Related Options PRO / Связанные опции PRO */
+			]]></add>
+		</operation>
+		
+		<!-- newer Journal2 -->
+		<operation error="skip">
+			<search position="before" ><![CDATA[
+			$product_options = Front::$IS_OC2 ? $this->model_journal2_product->getProductOptionsOC2($product_id) : $this->model_journal2_product->getProductOptionsOC1($product_id);
+			]]></search>
+			<add><![CDATA[
+			/* Related Options PRO / Связанные опции PRO */
+			if ( !$this->model_module_related_options ) {
+				$this->load->model('module/related_options');
+			}
+			
+			$ro_special = false;
+			$ro_price_prefix = '';
+			$ro_stock = '';
+			$ro_price = $this->model_module_related_options->getJournal2Price($product_id, $price, $ro_special, $ro_stock);
+			if ($ro_price !== false) {
+				
+				$price = $ro_price;
+			
+				if ($ro_special) {
+					$special = $ro_special;
+				}
+			}
+			
+			/* >> Related Options PRO / Связанные опции PRO */
+			]]></add>
+		</operation>
+		
+		
+		<operation error="skip">
+			<search position="replace" ><![CDATA[$special += $extra;]]></search>
+			<add><![CDATA[
+			/* Related Options PRO / Связанные опции PRO */
+			if ($special) {
+				$special += $extra;
+			}
+			/* >> Related Options PRO / Связанные опции PRO */ 
+			]]></add>
+		</operation>
+		
+		<operation error="skip">
+			<search position="replace" ><![CDATA['stock'     => $stock]]></search>
+			<add><![CDATA[
+			/* Related Options PRO / Связанные опции PRO */
+			'stock'     => (isset($ro_stock) && ($ro_stock===0 || $ro_stock)) ? $ro_stock : $stock
+			/* >> Related Options PRO / Связанные опции PRO */ 
+			]]></add>
+		</operation>
+		
+	</file>
+	
+	<file name="catalog/controller/checkout/cart.php">
+    
+		
+		
+    <operation error="log">
+			<search position="after"><![CDATA[$products = $this->cart->getProducts();]]></search>
+			<add><![CDATA[
+      // Related Options PRO / Связанные опции PRO <<
+					
+					if (!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning')) {
+						if ( !$this->model_module_related_options ) {
+							$this->load->model('module/related_options');
+						}
+						
+						if ( $this->model_module_related_options->installed() ) {
+							$products = $this->model_module_related_options->cart_ckeckout_stock($products);
+							foreach ($products as $product) {
+								if (!$product['stock']) {
+									$data['error_warning'] = $this->language->get('error_stock');
+									break;
+								}
+							}
+						}
+					}
+					
+			// >> Related Options PRO / Связанные опции PRO]]>
+      </add>
+		</operation>
+		
+		<!-- not required -->
+		<operation error="log">
+			<search position="after"><![CDATA[public function add() {]]></search>
+			<add><![CDATA[
+      // Related Options PRO / Связанные опции PRO <<
+			if ( isset($this->request->post['ro_not_required']) ) {
+				$ro_not_required = explode(',', $this->request->post['ro_not_required']);
+			}
+			// >> Related Options PRO / Связанные опции PRO]]>
+      </add>
+		</operation>
+		
+		<!-- not required -->
+		<operation error="log">
+			<search position="before"><![CDATA[if ($product_option['required'] && empty($option[$product_option['product_option_id']])) {]]></search>
+			<add><![CDATA[
+      // Related Options PRO / Связанные опции PRO <<
+			if ( isset($ro_not_required) && in_array($product_option['product_option_id'], $ro_not_required) ) continue;
+			// >> Related Options PRO / Связанные опции PRO]]>
+      </add>
+		</operation>
+		
+		<!--
+		<operation error="log">
+			<search position="before"><![CDATA[$data['products'][] = array(]]></search>
+			<add><![CDATA[
+      // Related Options PRO / Связанные опции PRO <<
+					
+						$this->load->model('module/related_options');
+						$ro_model = "";
+						if ( $this->model_module_related_options->installed() ) {
+							$ro_settings = $this->config->get('related_options');
+							if (isset($ro_settings['spec_model']) && $ro_settings['spec_model']) {
+								$ro_options = array();
+								foreach ($product['option'] as $option) {
+									if (isset($option['product_option_value_id'])) {
+										$ro_options[$option['product_option_id']] = $option['product_option_value_id'];
+									}
+								}
+								$ro_for_product = $this->model_module_related_options->get_related_options_sets_by_poids($product['product_id'], $ro_options);
+								if ($ro_for_product) {
+									if ($ro_settings['spec_model'] == 1) {
+										$ro_model = $ro_for_product[count($ro_for_product)-1]['model'];
+									} elseif ($ro_settings['spec_model'] == 2) {
+										foreach ($ro_for_product as $ro_comb) {
+											$ro_model.= $ro_comb['model'];
+										}
+									} elseif ($ro_settings['spec_model'] == 3) {
+										$ro_model = $product['model'];
+										foreach ($ro_for_product as $ro_comb) {
+											$ro_model.= $ro_comb['model'];
+										}
+									}
+								}
+								
+							}
+						}	
+					//}
+			// >> Related Options PRO / Связанные опции PRO]]>
+      </add>
+		</operation>
+		
+		<operation error="log">
+			<search position="replace"><![CDATA[=> $product['model'],]]></search>
+			<add><![CDATA[
+      // Related Options PRO / Связанные опции PRO <<
+					=> (isset($ro_model) && $ro_model!="")?($ro_model):($product['model']),
+			// >> Related Options PRO / Связанные опции PRO]]>
+      </add>
+		</operation>
+		
+		-->
+		
+	</file>
+	
+	
+
+</modification>

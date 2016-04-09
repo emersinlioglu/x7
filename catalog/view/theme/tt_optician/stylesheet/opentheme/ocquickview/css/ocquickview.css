@@ -1,0 +1,143 @@
+#quickview-bg-block {  
+	display: none; background-color : rgba(0,0,0,0.35); top: 0; left: 0; right: 0; bottom: 0;  margin: auto; position: fixed; z-index:99999;  }
+
+.quickview-load-img {  display: none; position: fixed; top: 50%; left: 0; right: 0; bottom: 0; text-align: center; z-index: 15; margin: auto;}
+
+.a-qv-close {
+    position: fixed;
+    z-index: 20;
+}
+#quickview-content {
+    position: fixed;
+    background-color: #f9f9f9;
+    border:2px solid  #000;
+    display: none;
+    z-index: 9999999;
+	padding:20px;
+    width:60%;
+    height:450px;
+    top: 15%;
+    right: 20%;
+    overflow: auto !important;
+}
+.quickview-container .name { margin:0 0 10px;  text-align:left; display:inline-block; width:100%; }
+.quickview-container .name h2 {
+	color: #555555;
+    font-size: 22px !important;
+    text-transform: uppercase;
+	font-family:'Montserrat', sans-serif;
+	margin:0 !important;
+}
+.quickview-container .list-unstyled li { font-size:15px; line-height:30px; } 
+.quickview-container .price { text-align:left; }
+.quickview-container .price li {
+    display: inline-block;
+    font-size: 24px;
+    font-weight: 700;
+	font-family:'Montserrat', sans-serif;
+}
+.quickview-container .price li span { font-size:15px; color: #999; font-style: italic;}
+.quickview-container .price li h2{color: #ec5355 !important; margin: 5px 0;}
+.quickview-container .thumbnails-image { margin:0 0 20px; }
+.quickview-container .image-qv-additional a.thumbnail {
+	background:#fff;
+	border:0;
+	padding:0;
+	border-radius:0;
+}
+.quickview-container .form-group #input-quantity2 {
+	background: #fff !important;
+    border: 3px solid #000;
+    color: #2f2f2f;
+    display: inline-block;
+    float: left;
+    font-size: 15px;
+    height: 45px;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    text-align: center;
+    width: 45px !important;
+    box-shadow: none;
+}
+.quickview-container .alert.alert-success {
+	top:0;
+	width:100%;
+	left:0;
+	position:absolute;
+	z-index:9;
+}
+.quickview-container .a-qv-close {
+	background:url("../images/fancybox_sprite.png") no-repeat 0 0 #fff;
+	font-size:0px;
+	position:fixed;
+	right:20%;
+	top:15%;
+	margin:-18px -18px 0 0;
+	z-index:99999990;
+	text-indent:-9999px; 
+	width: 36px;
+	height: 36px;
+	font-size: 28px;
+	line-height: 28px;
+	color: #333333;
+	text-align: center;
+	border-radius: 50px;
+}
+.quickview-container #product { margin:20px 0 0; }
+.quickview-container .form-group label { float:left; margin:8px 10px 0; }
+.quickview-container .rating { text-align:left; margin:0;  }
+.quickview-container .rating a { float:left; }
+.quickview-container .rating .rating-qick  { float:left; margin:0 10px 0 0; }
+.quickview-container .input-content {
+    margin: 10px 10px 10px 0;
+}
+.quickview-container #button-cart2{
+	float: left;
+    background: transparent;
+    display: inline-block;
+    width: auto;
+    padding: 0;
+}
+.quickview-container #button-cart2 span{
+	padding: 15px;
+    font-size: 13px;
+    margin: 10px 0 0;
+    margin-left: 10px;
+    background-color: #ec5355;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    border-radius: 0;
+    display: inline-block;
+}
+.quickview-container .btn-group button {
+	background:none;
+    color: #71c84e;
+    display: inline-block;
+    font-size: 16px;
+    height: 40px;
+    line-height: 40px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    width:40px;
+}
+.quickview-container .add-to-links{width:100%;}
+.quickview-container .add-to-links .btn-group{display:inline-block; width:100%; padding:0 0 15px	;}
+.quickview-container .btn-group .wishlist,
+.quickview-container .btn-group .compare {
+	display:inline-block;
+	width:45%;
+}
+.product-list .product-container .qv-button-container{
+  right: 30px;
+  bottom: 30px;
+  z-index: 9999;
+}
+.quickview-container .list-unstyled.price { margin:0 0 20px; }
+.quickview-container .list-unstyled.price li { font-size:15px; }
+.quickview-container .form-group.required label { float:none; }
+@media (max-width:992px) {
+.product-view .add-to-links .compare {margin:0;}
+.quickview-container .btn-group .wishlist, .quickview-container .btn-group .compare{width:100%;}
+}

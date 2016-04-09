@@ -1,0 +1,43 @@
+<modification>
+    <name>Category Thumbnail by Plaza Themes</name>
+	<version>1.0</version>
+	<link>http://www.plazathemes.com/</link>
+	<author>Kazu - Plaza Theme</author>
+	<code>category_thumbnail</code>
+
+	<file path="admin/controller/common/menu.php">
+		<operation>
+			<search><![CDATA[$data['category'] = $this->url->link('catalog/category', 'token=' . $this->session->data['token'], 'SSL');]]></search>
+			<add position="before"><![CDATA[
+				$data['category_thumbnail'] = $this->url->link('catalog/occategorythumbnail', 'token=' . $this->session->data['token'], 'SSL');
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[$data['text_category'] = $this->language->get('text_category');]]></search>
+			<add position="before"><![CDATA[
+				$data['text_category_thumbnail'] = $this->language->get('text_category_thumbnail');
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/english/common/menu.php">
+		<operation>
+			<search><![CDATA['Categories';]]></search>
+			<add position="before"><![CDATA[
+				$_['text_category_thumbnail'] = 'Category Thumbnail';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/view/template/common/menu.tpl">
+		<operation>
+			<search><![CDATA[<li><a href="<?php echo $category; ?>"><?php echo $text_category; ?></a></li>]]></search>
+			<add position="replace"><![CDATA[
+				<li><a class="parent"><?php echo $text_category; ?></a>
+					<ul>
+						<li><a href="<?php echo $category; ?>"><?php echo $text_category; ?></a></li>
+						<li><a href="<?php echo $category_thumbnail; ?>"><?php echo $text_category_thumbnail; ?></a></li>
+					</ul>
+				</li>
+			]]></add>
+		</operation>
+	</file>
+</modification>

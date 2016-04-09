@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <code>easy_blog</code>
+    <name>Blog For Opencart 2.x+</name>
+    <version>1.0</version>
+    <author>CarAn</author>
+    <file path="admin/controller/common/menu.php">
+        <operation>
+            <search trim="true" index="0"><![CDATA[
+				return $this->load->view('common/menu.tpl', $data);
+            ]]></search>
+            <add position="before" trim="false" offset="0"><![CDATA[
+				$data['text_blog'] = $this->language->get('text_blog');
+				$data['text_blog_article'] = $this->language->get('text_blog_article');
+				$data['blog_article'] = $this->url->link('blog/article', 'token=' . $this->session->data['token'], 'SSL');
+            ]]></add>
+        </operation>
+    </file>
+	
+	<file path="admin/view/template/common/menu.tpl">
+        <operation>
+            <search trim="true" index="0"><![CDATA[
+				<li id="system"><a class="parent"><i class="fa fa-cog fa-fw"></i> <span><?php echo $text_system; ?></span></a>
+            ]]></search>
+            <add position="before" trim="false" offset="0"><![CDATA[
+				<li id="blog"><a class="parent"><i class="fa fa-pencil-square-o fa-fw"></i> <span><?php echo $text_blog; ?></span></a>
+					<ul>
+						<li><a href="<?php echo $blog_article; ?>"><?php echo $text_blog_article; ?></a></li>
+					</ul>
+				</li>
+            ]]></add>
+        </operation>
+    </file>
+	
+	<file path="admin/language/english/common/menu.php">
+        <operation>
+            <search trim="true" index="0"><![CDATA[
+				$_['text_user']                        = 'Users';
+            ]]></search>
+            <add position="before" trim="false" offset="0"><![CDATA[
+				$_['text_blog']                        = 'Blog';
+				$_['text_blog_article']                = 'Articles';
+            ]]></add>
+        </operation>
+    </file>
+	
+	<file path="catalog/view/theme/default/template/common/footer.tpl">
+        <operation>
+            <search trim="true" index="0"><![CDATA[
+          <?php foreach ($informations as $information) { ?>
+            ]]></search>
+            <add position="before" trim="false" offset="0"><![CDATA[
+				<li><a href="<?php echo $blog['href']; ?>"><?php echo $blog['title']; ?></a></li>
+            ]]></add>
+        </operation>
+    </file>
+	
+	<file path="catalog/controller/common/footer.php">
+        <operation>
+            <search trim="true" index="0"><![CDATA[
+				$data['informations'] = array();
+            ]]></search>
+            <add position="before" trim="false" offset="0"><![CDATA[
+				$data['blog'] = array(
+					'title' => $this->config->get('easy_blog_meta_title'),
+					'href'  => $this->url->link('blog/blog')
+				);
+            ]]></add>
+        </operation>
+    </file>
+	
+</modification>

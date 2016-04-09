@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<id><![CDATA[Automatische Artikel Nr.]]></id>
+	<version><![CDATA[q.0.0]]></version>
+	<vqmver><![CDATA[2.5.0]]></vqmver>
+	<author><![CDATA[<a onClick="window.open('mailto:halitciftci@gmail.com');" title="mail me">Halit Ciftci</a>]]></author> 
+	
+	<!--  -->       
+	<file name="admin/controller/catalog/product.php"> 
+		<operation error="skip">
+             <search position="replace"><![CDATA[$data['model'] = '';]]></search>
+             <add><![CDATA[$data['model'] = date("ymdHi");]]></add>
+		</operation>
+	</file>		
+</modification>
