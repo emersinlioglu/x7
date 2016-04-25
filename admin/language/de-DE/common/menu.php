@@ -106,3 +106,4 @@ $_['text_openbay_report_price']			= 'OB Preisübersicht';
 $_['text_openbay_order_import']			= 'OB Auftragsimport';
 $_['text_paypal_manage']				= 'PayPal verwalten';
 $_['text_paypal_search']				= 'Transaktionen';
+$_['imei_menu_item'] = 'IMEI';

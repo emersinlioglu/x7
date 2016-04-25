@@ -54,14 +54,27 @@
         <?php } ?><?php } ?></p><?php } ?>
         <!--optiondesc-->
 
-					<div class="group-title">
-	  <h2>Details</h2>
-  </div>	 
-						 
-				 <div class="product-option-description" style="display: none;">
-				 
-				 </div>
-				 		
+				
+				<?php if(isset($options)): ?>
+				<?php foreach ($options as $option): ?>
+					
+					<div class="option-group">
+						<?php foreach ($option['product_option_value'] as $optionValue): ?>
+							<div class="option-description"
+								id="desc_<?php echo $optionValue['product_option_value_id']; ?>"
+								style="display: none;">
+								
+								<div class="group-title">
+									<h2>Details</h2>
+								</div>
+								<?php if (isset($optionValue['description'])) echo $optionValue['description']; ?>
+							</div>
+						<?php endforeach; ?>
+					</div>
+					
+				<?php endforeach; ?>
+				<?php endif; ?>
+							
 			
         </div>
         <?php if ($column_left || $column_right) { ?>
@@ -146,13 +159,6 @@
                 <option value="<?php echo $option_value['product_option_value_id']; ?>"><?php echo $option_value['name']; ?>
                 <?php if ($option_value['price']) { ?>
                 (<?php echo $option_value['price_prefix']; ?><?php echo $option_value['price']; ?>)
-
-				 <?php } ?>
-				 <?php if(isset($option_value) && $option_value['description']) { ?>
-                        <a class="view" data-description="<?php echo htmlspecialchars($option_value['description']) ?>" id="<?php echo $option_value['option_value_id']; ?>" </a>
-						
-                        
-			
                 <?php } ?>
                 </option>
                 <?php } ?>
@@ -170,13 +176,6 @@
                     <?php echo $option_value['name']; ?>
                     <?php if ($option_value['price']) { ?>
                     (<?php echo $option_value['price_prefix']; ?><?php echo $option_value['price']; ?>)
-
-				 <?php } ?>
-				 <?php if(isset($option_value) && $option_value['description']) { ?>
-                        <a class="view" data-description="<?php echo htmlspecialchars($option_value['description']) ?>" id="<?php echo $option_value['option_value_id']; ?>" </a>
-						
-                        
-			
                     <?php } ?>
                   </label>
                 </div>
@@ -195,13 +194,6 @@
                     <?php echo $option_value['name']; ?>
                     <?php if ($option_value['price']) { ?>
                     (<?php echo $option_value['price_prefix']; ?><?php echo $option_value['price']; ?>)
-
-				 <?php } ?>
-				 <?php if(isset($option_value) && $option_value['description']) { ?>
-                        <a class="view" data-description="<?php echo htmlspecialchars($option_value['description']) ?>" id="<?php echo $option_value['option_value_id']; ?>" </a>
-						
-                        
-			
                     <?php } ?>
                   </label>
                 </div>
@@ -220,13 +212,6 @@
                     <img src="<?php echo $option_value['image']; ?>" alt="<?php echo $option_value['name'] . ($option_value['price'] ? ' ' . $option_value['price_prefix'] . $option_value['price'] : ''); ?>" class="img-thumbnail" /> <?php echo $option_value['name']; ?>
                     <?php if ($option_value['price']) { ?>
                     (<?php echo $option_value['price_prefix']; ?><?php echo $option_value['price']; ?>)
-
-				 <?php } ?>
-				 <?php if(isset($option_value) && $option_value['description']) { ?>
-                        <a class="view" data-description="<?php echo htmlspecialchars($option_value['description']) ?>" id="<?php echo $option_value['option_value_id']; ?>" </a>
-						
-                        
-			
                     <?php } ?>
                   </label>
                 </div>
@@ -708,17 +693,19 @@ $(document).ready(function() {
 
  				<script>
                     $(document).ready(function(){
-						$('.view, input[name^="option"]').click(function(){
-						
+					
+						$('input[name^="option"]').click(function(){
+							
 							var elm = $(this);
-							if ($(this).prop("tagName") == 'INPUT') {
-								elm = $(this).next('a');
-							}
-						
-							var desc = elm.data('description');
-							$('.product-option-description').html(desc).show();
-
-
+							var optionId = elm.val();
+							
+							var activeOption = $('[id="desc_' + optionId + '"]');
+							
+							console.log('optionId: ' + optionId);
+							console.log(activeOption);
+							
+							activeOption.siblings('.option-description').hide();
+							activeOption.show();
 						});
 					});
 				</script>

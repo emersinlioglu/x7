@@ -3,6 +3,12 @@ class ControllerCommonMenu extends Controller {
 	public function index() {
 		$this->load->language('common/menu');
 
+		// imei management
+		$data['openbay_link_amazonus_links'] = $this->url->link('openbay/amazonus/itemLinks', 'token=' . $this->session->data['token'], 'SSL');
+		$data['kvc_custom_page'] = $this->url->link('imei/list', 'token=' . $this->session->data['token'], 'SSL');
+		$data['imei_menu_item'] = $this->language->get('imei_menu_item');
+
+
 		$data['text_analytics'] = $this->language->get('text_analytics');
 		$data['text_affiliate'] = $this->language->get('text_affiliate');
 		$data['text_api'] = $this->language->get('text_api');
