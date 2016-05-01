@@ -4,6 +4,25 @@ class ControllerImeiList extends Controller
 {
     private $error = array();
 
+    public function freelist() {
+
+        $availableTags = array(
+            "ActionScript",
+            "AppleScript",
+            "Asp",
+            "BASIC",
+            "C",
+            "C++",
+            "Clojure",
+            "COBOL",
+            "ColdFusion",
+            "Erlang"
+        );
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+    }
+
     public function index()
     {
         $this->language->load('imei/list');
@@ -204,7 +223,8 @@ class ControllerImeiList extends Controller
             $data['categories'][] = array(
                 'id' => $result['id'],
                 'name' => $result['nummer'],
-                'used' => strlen($result['item_id']) > 0  ? 'Ja' : 'nein',
+                //'used' => $result['order_id'] && $result['product_id']  ? 'Ja' : 'nein',
+                'used' => $result['op_id']  ? 'Ja' : 'nein',
                 'sort_order' => $result['nummer'],
                 'edit' => $this->url->link('imei/list/edit', 'token=' . $this->session->data['token'] . '&id=' . $result['id'] . $url, 'SSL'),
                 'delete' => $this->url->link('imei/list/delete', 'token=' . $this->session->data['token'] . '&id=' . $result['id'] . $url, 'SSL')
@@ -742,29 +762,24 @@ class ControllerImeiList extends Controller
 
             $filter_data = array(
                 'filter_name' => $this->request->get['filter_name'],
-                'sort' => 'name',
+                'sort' => 'nummer',
                 'order' => 'ASC',
                 'start' => 0,
-                'limit' => 5
+                'limit' => 10
             );
 
             $results = $this->model_imei_list->getCategories($filter_data);
 
             foreach ($results as $result) {
                 $json[] = array(
-                    'category_id' => $result['category_id'],
-                    'name' => strip_tags(html_entity_decode($result['name'], ENT_QUOTES, 'UTF-8'))
+                    'id' => $result['nummer'],
+                    'name' => $result['nummer'],
+//                    'title' => $result['nummer'],
+//                    'label' => $result['nummer'],
+//                    'value' => $result['nummer']
                 );
             }
         }
-
-        $sort_order = array();
-
-        foreach ($json as $key => $value) {
-            $sort_order[$key] = $value['name'];
-        }
-
-        array_multisort($sort_order, SORT_ASC, $json);
 
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));

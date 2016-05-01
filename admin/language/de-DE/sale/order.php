@@ -7,6 +7,8 @@
  * @license		GPL - www.gnu.org/copyleft/gpl.html
  */
 
+$_['column_imei'] = 'Imei';
+
 // mic: overriding standard values
 $_['button_add_product']		= '+ Produkt';
 $_['tab_payment']				= 'Rechnungsadresse';

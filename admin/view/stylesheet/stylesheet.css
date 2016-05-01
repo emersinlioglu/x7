@@ -11,6 +11,15 @@ html, body {
 h1, h2, h3, h4, h5, h6, p {
 	margin-top: 0;
 }
+
+.order-products .table-responsive {
+	overflow-x: visible;
+}
+.order-products .imeis .ui-autocomplete {
+	max-height: 100px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
 .page-header {
 	vertical-align: middle;
 	margin: 15px 0;

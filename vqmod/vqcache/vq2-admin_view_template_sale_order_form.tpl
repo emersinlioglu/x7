@@ -17,7 +17,7 @@
         <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $text_form; ?></h3>
       </div>
       <div class="panel-body">
-        <form class="form-horizontal">
+        <form class="form-horizontal order-products">
           <ul id="order" class="nav nav-tabs nav-justified">
             <li class="disabled active"><a href="#tab-customer" data-toggle="tab">1. <?php echo $tab_customer; ?></a></li>
             <li class="disabled"><a href="#tab-cart" data-toggle="tab">2. <?php echo $tab_product; ?></a></li>
@@ -261,6 +261,7 @@
 			?>
 			
                       <td class="text-right"><?php echo $column_quantity; ?></td>
+                      <td class="text-right"><?php echo $column_imei; ?></td>
                       <td class="text-right"><?php echo $column_price; ?></td>
                       <td class="text-right"><?php echo $column_total; ?></td>
                       <td><?php echo $column_action; ?></td>
@@ -301,6 +302,8 @@
 			?>
 			
 			
+                      <td class="text-right"><?php echo $order_product['quantity']; ?>
+                        <input type="hidden" name="product[<?php echo $product_row; ?>][quantity]" value="<?php echo $order_product['quantity']; ?>" /></td>
                       <td class="text-right"><?php echo $order_product['quantity']; ?>
                         <input type="hidden" name="product[<?php echo $product_row; ?>][quantity]" value="<?php echo $order_product['quantity']; ?>" /></td>
                       <td class="text-right"></td>
@@ -1166,8 +1169,9 @@ $('#button-refresh').on('click', function() {
 			// >> Related Options PRO / Связанные опции PRO
 			
 					html += '  <td class="text-right"><div class="input-group btn-block" style="max-width: 200px;"><input type="text" name="product[' + i + '][quantity]" value="' + product['quantity'] + '" class="form-control" /><span class="input-group-btn"><button type="button" data-toggle="tooltip" title="<?php echo $button_refresh; ?>" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary"><i class="fa fa-refresh"></i></button></span></div></td>';
+					html += '  <td class="text-right imeis"><div class="input-group btn-block" style="max-width: 200px;"><input type="text" name="product[' + i + '][imei]" value="' + product['imei'] + '" class="form-control" /><span class="input-group-btn"><button type="button" data-toggle="tooltip" title="<?php echo $button_refresh; ?>" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-primary"><i class="fa fa-refresh"></i></button></span></div></td>';
                     html += '  <td class="text-right">' + product['price'] + '</td>';
-					html += '  <td class="text-right">' + product['total'] + '</td>';
+                    html += '  <td class="text-right">' + product['total'] + '</td>';
 					html += '  <td class="text-center" style="width: 3px;"><button type="button" value="' + product['cart_id'] + '" data-toggle="tooltip" title="<?php echo $button_remove; ?>" data-loading-text="<?php echo $text_loading; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
 					html += '</tr>';
 
@@ -1219,6 +1223,46 @@ $('#button-refresh').on('click', function() {
 
 			$('#cart').html(html);
 
+                var availableTags = [
+                    "ActionScript",
+                    "AppleScript",
+                    "Asp",
+                    "BASIC",
+                    "C",
+                    "C++",
+                    "Clojure",
+                    "COBOL",
+                    "ColdFusion",
+                    "Erlang"
+                ];
+                $('#cart .imeis input[type="text"]').each(function() {
+                    var elmId = Date.now() * 2;
+                    $(this).attr('id', elmId);
+//                    $('#' + elmId).autocomplete({
+//                        source: availableTags
+//                    });
+                    $('#' + elmId).autocomplete({
+                        autoFocus: false,
+                        'source': function (request, response) {
+                            $.ajax({
+                                url: 'index.php?route=imei/list/autocomplete&token=<?php echo $token; ?>&filter_name=' + encodeURIComponent(request),
+                                dataType: 'json',
+                                success: function (json) {
+                                    response($.map(json, function (item) {
+                                        return {
+                                            label: item['name'],
+                                            value: item['id']
+                                        }
+                                    }));
+                                }
+                            });
+                        },
+                        'select': function (item) {
+                            $(this).val(item['value']);
+                        }
+                    });
+                });
+
 			// Totals
 			html = '';
 
@@ -1251,6 +1295,7 @@ $('#button-refresh').on('click', function() {
 			// >> Related Options PRO / Связанные опции PRO
 			
 					html += '  <td class="text-right">' + product['quantity'] + '</td>';
+					html += '  <td class="text-right">' + product['imei'] + '</td>';
 					html += '  <td class="text-right">' + product['price'] + '</td>';
 					html += '  <td class="text-right">' + product['total'] + '</td>';
 					html += '</tr>';

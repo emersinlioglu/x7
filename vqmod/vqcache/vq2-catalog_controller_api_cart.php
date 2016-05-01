@@ -1,9 +1,23 @@
 <?php
 class ControllerApiCart extends Controller {
+
+    public function getOrderId() {
+        // order id
+        $httpReferer = $_SERVER['HTTP_REFERER'];
+        $pos = strpos($httpReferer, 'order_id');
+        $orderIdString = substr($httpReferer, $pos);
+        $refereParams = explode('=', $orderIdString);
+        $orderId = $refereParams[1];
+
+        return $orderId;
+    }
+
 	public function add() {
 		$this->load->language('api/cart');
+        $this->load->model('catalog/product');
 
 		$json = array();
+
 
 		if (!isset($this->session->data['api_id'])) {
 			$json['error']['warning'] = $this->language->get('error_permission');
@@ -19,6 +33,11 @@ class ControllerApiCart extends Controller {
 					}
 
 					$this->cart->add($product['product_id'], $product['quantity'], $option);
+
+                    // update imei nummer
+                    if (isset($product['imei'])) {
+                        $result = $this->model_catalog_product->updateImeiProduct($product['imei'], $this->getOrderId(), $product['product_id']);
+                    }
 				}
 
 				$json['success'] = $this->language->get('text_success');
@@ -147,8 +166,11 @@ class ControllerApiCart extends Controller {
 
 	public function products() {
 		$this->load->language('api/cart');
+		$this->load->model('catalog/product');
 
 		$json = array();
+
+        $orderId = $this->getOrderId();
 
 		if (!isset($this->session->data['api_id'])) {
 			$json['error']['warning'] = $this->language->get('error_permission');
@@ -203,7 +225,10 @@ class ControllerApiCart extends Controller {
 					}
 				}
 			}
-			
+
+			// imei nummer
+			$productImei = $this->model_catalog_product->getProductImei($orderId, $product['product_id']);
+
 			// >> Related Options PRO / Связанные опции PRO
 			// Related Options PRO / Связанные опции PRO   replaced : $json['products'][] = array(
 			$json['products'][count($json['products'])-1] = $json['products'][count($json['products'])-1] + array(
@@ -216,6 +241,7 @@ class ControllerApiCart extends Controller {
 					'quantity'   => $product['quantity'],
 					'stock'      => $product['stock'] ? true : !(!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning')),
 					'shipping'   => $product['shipping'],
+					'imei'   	 => $productImei,
 					'price'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
 					'total'      => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']),
 					'reward'     => $product['reward']

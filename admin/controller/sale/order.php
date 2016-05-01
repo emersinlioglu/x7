@@ -396,6 +396,7 @@ class ControllerSaleOrder extends Controller {
 		$data['column_product'] = $this->language->get('column_product');
 		$data['column_model'] = $this->language->get('column_model');
 		$data['column_quantity'] = $this->language->get('column_quantity');
+		$data['column_imei'] = $this->language->get('column_imei');
 		$data['column_price'] = $this->language->get('column_price');
 		$data['column_total'] = $this->language->get('column_total');
 		$data['column_action'] = $this->language->get('column_action');
@@ -765,6 +766,7 @@ class ControllerSaleOrder extends Controller {
 			$data['column_product'] = $this->language->get('column_product');
 			$data['column_model'] = $this->language->get('column_model');
 			$data['column_quantity'] = $this->language->get('column_quantity');
+			$data['column_imei'] = $this->language->get('column_imei');
 			$data['column_price'] = $this->language->get('column_price');
 			$data['column_total'] = $this->language->get('column_total');
 
@@ -1556,6 +1558,7 @@ class ControllerSaleOrder extends Controller {
 		$data['column_product'] = $this->language->get('column_product');
 		$data['column_model'] = $this->language->get('column_model');
 		$data['column_quantity'] = $this->language->get('column_quantity');
+		$data['column_imei'] = $this->language->get('column_imei');
 		$data['column_price'] = $this->language->get('column_price');
 		$data['column_total'] = $this->language->get('column_total');
 

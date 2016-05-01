@@ -261,9 +261,9 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
             chmod($fdf_fn, 0777);
 		}
 
-		ini_set("log_errors", 1);
-		ini_set("error_log", "/tmp/php-error.log");
-		error_log($fdf_fn);
+//		ini_set("log_errors", 1);
+//		ini_set("error_log", "/tmp/php-error.log");
+//		error_log($fdf_fn);
 
 		$mail = new Mail();
 		$mail->protocol = $this->config->get('config_mail_protocol');

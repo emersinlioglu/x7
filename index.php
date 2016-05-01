@@ -1,8 +1,8 @@
 <?php
 
-ini_set("log_errors", 1);
-ini_set("error_log", "/tmp/php-error.log");
-error_log('=============== error log test ==================');
+//ini_set("log_errors", 1);
+//ini_set("error_log", "/tmp/php-error.log");
+//error_log('=============== error log test ==================');
 
 // Version
 define('VERSION', '2.1.0.1');

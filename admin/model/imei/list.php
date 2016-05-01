@@ -65,11 +65,15 @@ class ModelImeiList extends Model {
 	}
 
 	public function getCategories($data = array()) {
-		$sql = "SELECT * FROM " . DB_PREFIX . "imei ";
+		$sql = "
+			SELECT i.*, op.order_product_id as op_id
+			FROM " . DB_PREFIX . "imei i
+			LEFT JOIN " . DB_PREFIX . "order_product op on op.order_id = i.order_id AND op.product_id = i.product_id
+		";
 
-//		if (!empty($data['filter_name'])) {
-//			$sql .= " AND cd2.name LIKE '" . $this->db->escape($data['filter_name']) . "%'";
-//		}
+		if (!empty($data['filter_name'])) {
+			$sql .= "WHERE nummer LIKE '" . $this->db->escape($data['filter_name']) . "%'";
+		}
 
 		$sort_data = array(
 			'nummer',

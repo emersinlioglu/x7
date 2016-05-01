@@ -1,5 +1,23 @@
 <?php
 class ModelCatalogProduct extends Model {
+
+    public function getProductImei($order_id, $product_id) {
+
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "imei i "
+            . " WHERE i.order_id = '" .  (int)$order_id . "'"
+            . " AND i.product_id = '" . (int)$product_id . "'"
+        );
+        if ($query->num_rows) {
+            return $query->rows[0]['nummer'];
+        }
+        return '';
+    }
+
+    public function updateImeiProduct($imei, $order_id, $product_id) {
+        $this->db->query("UPDATE " . DB_PREFIX . "imei SET order_id = null, product_id = null WHERE order_id = '" . (int)$order_id . "' AND product_id = '" . (int)$product_id . "'");
+        $this->db->query("UPDATE " . DB_PREFIX . "imei SET order_id ='" . (int)$order_id . "', product_id = '" . (int)$product_id . "' WHERE nummer = '" . $imei . "'");
+    }
+
 	public function updateViewed($product_id) {
 		$this->db->query("UPDATE " . DB_PREFIX . "product SET viewed = (viewed + 1) WHERE product_id = '" . (int)$product_id . "'");
 	}
