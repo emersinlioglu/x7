@@ -18,6 +18,7 @@ class ModelCatalogProduct extends Model {
 		$this->db->query("UPDATE " . DB_PREFIX . "imei SET order_id ='" . (int)$order_id . "', product_id = '" . (int)$product_id . "' WHERE nummer = '" . $imei . "'");
 	}
 
+
 	public function addProduct($data) {
 		$this->event->trigger('pre.admin.product.add', $data);
 

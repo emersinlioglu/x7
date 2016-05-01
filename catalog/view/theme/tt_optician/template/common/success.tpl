@@ -36,10 +36,10 @@
             <?php endif; ?>
             <?php endforeach; ?>
             <?php endif; ?>
-
+<!--
             <a target='_blank'
-               href="/X7/index.php?route=checkout/success/mailpdf&vertragstyp=vodafone">Mail PDF für vodafone</a> <br>
-
+               href="/X7/index.php?route=checkout/success/mailpdf&vertragstyp=vodafone">Test Mail PDF für vodafone</a> <br>
+-->
             <div class="buttons">
                 <div class="pull-right">
                     <button onclick="window.location.href='<?php echo $continue; ?>'" class="button">

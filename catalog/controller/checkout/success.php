@@ -1,10 +1,14 @@
 <?php
 class ControllerCheckoutSuccess extends Controller {
 
-	public function mailpdf() {
+	public function mailpdf($vertragstyp = '') {
+
+		if (!$vertragstyp && isset($_GET['vertragstyp'])) {
+			$vertragstyp = $_GET['vertragstyp'];
+		}
 
 		// Include pdftk-php class
-		require('./pdftk-php.php');
+		require_once('./pdftk-php.php');
 
 		// Initiate the class
 		$pdfmaker = new pdftk_php;
@@ -94,13 +98,12 @@ class ControllerCheckoutSuccess extends Controller {
 		$pdf_staat = $this->convertStaatIdToName($pdf_staat);
 
 		$strasse = $pdf_strasse;
-		if (isset($_GET['vertragstyp'])) {
-			switch ($_GET['vertragstyp']) {
-				case 'vodafone': 									break;
-				case 'o2': 											break;
-				case 'mobilcom': $strasse = ' ' . $pdf_hausnr;   	break;  // nur für mobilcom
-				default: break;
-			}
+
+		switch ($vertragstyp) {
+			case 'vodafone': 									break;
+			case 'o2': 											break;
+			case 'mobilcom': $strasse = ' ' . $pdf_hausnr;   	break;  // nur für mobilcom
+			default: break;
 		}
 
 		$pdf_datum = '';
@@ -208,20 +211,20 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 <html>
 
 <head>
-<title>My Title</title>
+<title>' . $vertragstyp . '</title>
 </head>
 
 <body>
 
-<h1>Verträge</h1>
-<p>anbei finden Sie die abgeschlossenen Verträge in Pdf-Format.</p>
+<h1>Vertrag: ' . $vertragstyp . '</h1>
+<p>anbei finden Sie den abgeschlossenen Vertrag in Pdf-Format.</p>
 
 </body>
 </html>
 		';
 
-		$text = 'Verträge' . PHP_EOL ;
-		$text .= 'anbei finden Sie die abgeschlossenen Verträge in Pdf-Format.';
+		$text = 'Vertrag: ' . $vertragstyp . PHP_EOL ;
+		$text .= 'anbei finden Sie den abgeschlossenen Vertrag in Pdf-Format.';
 
 
         $vertragsarten = array();
@@ -626,6 +629,9 @@ switch ($pdf_check_saat) {
 		
 		$this->load->language('checkout/success');
 
+//		echo "<pre>";
+//		print_r($this->session);
+//		echo "</pre>";
 
 		if (isset($this->session->data['order_id'])) {
 			
@@ -693,11 +699,26 @@ switch ($pdf_check_saat) {
 
 		$data['breadcrumbs'] = array();
 
+		// vertragsarten
 		$vertragsarten = array();
 		if (isset($this->session->data['vertragsarten']) && is_array($this->session->data['vertragsarten'])) {
 			$vertragsarten = $this->session->data['vertragsarten'];
+
+			//[vertragsarten] => Array
+			//(
+			//	[vodafone] => 1
+			//	[mobilcom] => 1
+			//	[o2] => 0
+			//)
+			foreach ($vertragsarten as $vertragsart => $isUsed) {
+				if ($isUsed) {
+					$this->mailpdf($vertragsart);
+				}
+			}
 		}
 		$data['vertragsarten'] = $vertragsarten;
+
+
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_home'),

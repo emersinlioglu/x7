@@ -54,16 +54,29 @@
         <?php } else { ?>
         <a href="<?php echo $tags[$i]['href']; ?>"><?php echo $tags[$i]['tag']; ?></a>
         <?php } ?><?php } ?></p><?php } ?>
-        <?php print_r($options); ?>
         <!--optiondesc-->
 
-
-						 <?php foreach ($options as $option) { ?>
-						 
-                         <div id="desc_<?php echo $option_value['option_value_id']; ?>" style="display:none">
-                            <?php echo $option_value['description'] ?>
-                        </div> <?php } ?>
-						
+				
+				<?php if(isset($options)): ?>
+				<?php foreach ($options as $option): ?>
+					
+					<div class="option-group">
+						<?php foreach ($option['product_option_value'] as $optionValue): ?>
+							<div class="option-description"
+								id="desc_<?php echo $optionValue['product_option_value_id']; ?>"
+								style="display: none;">
+								
+								<div class="group-title">
+									<h2>Details</h2>
+								</div>
+								<?php if (isset($optionValue['description'])) echo $optionValue['description']; ?>
+							</div>
+						<?php endforeach; ?>
+					</div>
+					
+				<?php endforeach; ?>
+				<?php endif; ?>
+							
 			
         </div>
         <?php if ($column_left || $column_right) { ?>
@@ -150,13 +163,6 @@
                 <option value="<?php echo $option_value['product_option_value_id']; ?>"><?php echo $option_value['name']; ?>
                 <?php if ($option_value['price']) { ?>
                 (<?php echo $option_value['price_prefix']; ?><?php echo $option_value['price']; ?>)
-
-				 <?php } ?>
-				 <?php if(isset($option_value) && $option_value['description']) { ?>
-                        <a class="view" id="<?php echo $option_value['option_value_id']; ?>" style="color: red;"> (Details) </a>
-						
-                        
-			
                 <?php } ?>
                 </option>
                 <?php } ?>
@@ -187,13 +193,6 @@
                     <?php echo $option_value['name']; ?>
                     <?php if ($option_value['price']) { ?>
                     (<?php echo $option_value['price_prefix']; ?><?php echo $option_value['price']; ?>)
-
-				 <?php } ?>
-				 <?php if(isset($option_value) && $option_value['description']) { ?>
-                        <a class="view" id="<?php echo $option_value['option_value_id']; ?>" style="color: red;"> (Details) </a>
-						
-                        
-			
                     <?php } ?>
                   </label>
                 </div>
@@ -225,13 +224,6 @@
                     <?php echo $option_value['name']; ?>
                     <?php if ($option_value['price']) { ?>
                     (<?php echo $option_value['price_prefix']; ?><?php echo $option_value['price']; ?>)
-
-				 <?php } ?>
-				 <?php if(isset($option_value) && $option_value['description']) { ?>
-                        <a class="view" id="<?php echo $option_value['option_value_id']; ?>" style="color: red;"> (Details) </a>
-						
-                        
-			
                     <?php } ?>
                   </label>
                 </div>
@@ -263,13 +255,6 @@
                     <img src="<?php echo $option_value['image']; ?>" alt="<?php echo $option_value['name'] . ($option_value['price'] ? ' ' . $option_value['price_prefix'] . $option_value['price'] : ''); ?>" class="img-thumbnail" /> <?php echo $option_value['name']; ?>
                     <?php if ($option_value['price']) { ?>
                     (<?php echo $option_value['price_prefix']; ?><?php echo $option_value['price']; ?>)
-
-				 <?php } ?>
-				 <?php if(isset($option_value) && $option_value['description']) { ?>
-                        <a class="view" id="<?php echo $option_value['option_value_id']; ?>" style="color: red;"> (Details) </a>
-						
-                        
-			
                     <?php } ?>
                   </label>
                 </div>
@@ -770,11 +755,20 @@ $(document).ready(function() {
 
  				<script>
                     $(document).ready(function(){
-    				$('.view').onclick(function(){  
-					 $("#desc_".concat(this.id)).fadeIn(500)
-    					},function(){
-     				  $("#desc_".concat(this.id)).fadeOut(500)
-   						})
+					
+						$('input[name^="option"]').click(function(){
+							
+							var elm = $(this);
+							var optionId = elm.val();
+							
+							var activeOption = $('[id="desc_' + optionId + '"]');
+							
+							console.log('optionId: ' + optionId);
+							console.log(activeOption);
+							
+							activeOption.siblings('.option-description').hide();
+							activeOption.show();
+						});
 					});
 				</script>
 			

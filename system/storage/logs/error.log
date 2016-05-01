@@ -3839,3 +3839,11 @@
 2016-05-01 20:26:12 - PHP Notice:  Undefined index: session_id in C:\www\x7\admin\controller\imei\list.php on line 226
 2016-05-01 20:26:12 - PHP Notice:  Undefined index: session_id in C:\www\x7\admin\controller\imei\list.php on line 226
 2016-05-01 20:26:12 - PHP Notice:  Undefined index: session_id in C:\www\x7\admin\controller\imei\list.php on line 226
+2016-05-01 23:08:38 - PHP Notice:  Undefined variable: text_loading in C:\www\x7\catalog\view\theme\tt_optician\template\checkout\vertragsdaten.tpl on line 1332
+2016-05-01 23:09:19 - PHP Notice:  Undefined variable: text_loading in C:\www\x7\catalog\view\theme\tt_optician\template\checkout\vertragsdaten.tpl on line 1332
+2016-05-01 23:29:07 - PHP Notice:  Undefined variable: pdf_original in C:\www\x7\catalog\controller\checkout\success.php on line 193
+2016-05-01 23:29:35 - PHP Notice:  Undefined variable: pdf_original in C:\www\x7\catalog\controller\checkout\success.php on line 193
+2016-05-01 23:29:35 - PHP Notice:  Undefined variable: pdf_original in C:\www\x7\catalog\controller\checkout\success.php on line 193
+2016-05-01 23:52:27 - PHP Notice:  Undefined variable: text_loading in C:\www\x7\catalog\view\theme\tt_optician\template\checkout\vertragsdaten.tpl on line 1332
+2016-05-01 23:53:40 - PHP Notice:  Undefined variable: pdf_original in C:\www\x7\catalog\controller\checkout\success.php on line 193
+2016-05-01 23:54:14 - PHP Notice:  Undefined variable: pdf_original in C:\www\x7\catalog\controller\checkout\success.php on line 193

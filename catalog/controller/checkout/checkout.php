@@ -107,6 +107,9 @@ class ControllerCheckoutCheckout extends Controller {
 		}
 		
 		$data['hatVertragsOption'] = $hatVertragsOption;
+//		echo "<pre>";
+//		print_r($vertragsarten, 1);
+//		echo "</pre>";
 //error_log(print_r($vertragsarten, 1));
 
 		$this->load->language('checkout/checkout');
