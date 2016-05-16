@@ -98,10 +98,10 @@ class ControllerCheckoutCheckout extends Controller {
 		
 		$this->session->data['vertragsarten'] = $vertragsarten;
 		
-		$hatVertragsOption = false;
+		$hatVertragsOption = 0;
 		foreach ($vertragsarten as $vertragstyp => $isActive) {
 			if ($isActive) {
-				$hatVertragsOption = true;
+				$hatVertragsOption = 1;
 				break;
 			}
 		}
